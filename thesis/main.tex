@@ -1,0 +1,294 @@
+%%%%% INSTRUCTIONS FOR COMPILING THE DOCUMENT %%%%%
+%% Overleaf: just click Recompile.
+%% Terminal:
+%%  1. pdflatex main.tex
+%%  2. makeindex -s main.ist -t main.glg -o main.gls main.glo
+%%  3. biber main
+%%  4. pdflatex main.tex
+%%  5. pdflatex main.tex
+%% Similar sequence of commands is also required
+%% in LaTeX specific editors.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% PREAMBLE %%%%%
+
+%%%%% Document class declaration.
+% The possible optional arguments are
+%   finnish - thesis in Finnish (default)
+%   english - thesis in English
+%   numeric - citations in numeric style (default)
+%   authoryear - citations in author-year style
+%   apa - citations in APA 7 (available only in English)
+%   ieee - citations in IEEE style
+%       apa and ieee provide biblatex basic styles as is!
+%   draft - for faster non-final works, also skips images
+%           (recommended, remove in final version)
+%   programs - if you wish to display code snippets
+% Example: \documentclass[english, authoryear]{tauthesis}
+%          thesis in English with author-year citations
+\documentclass[english, numeric, fleqn, draft]{tauthesis}
+
+% The glossaries package throws a warning:https://www.overleaf.com/project/62e7923e3f59d530f15d76e9
+% No language module detected for 'finnish'.
+% You can safely ignore this. All other
+% warnings should be taken care of!
+
+%%%%% Your packages.
+% Graphs
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.15}
+
+% Subfigures and wrapping text
+% \usepackage{subcaption}
+
+% Mathematics packages
+\usepackage{amsmath, amssymb, amsthm}
+%\usepackage{bm}
+
+% Text hyperlinking
+\usepackage{hyperref}
+%\hypersetup{hidelinks}
+
+% (SI) unit handling
+\usepackage{siunitx}
+\sisetup{
+    detect-all,
+    math-sf=\mathrm,
+    exponent-product=\cdot,
+%    output-decimal-marker={,} % for theses in FINNISH!
+}
+
+%%%%% Your commands.
+
+% Basic theorems in Finnish and in English.
+% Remove [chapter] if you wish a simply
+% running enumeration.
+% \newtheorem{lause}{Lause}[chapter]
+% \newtheorem{theorem}[lause]{Theorem}
+
+% \newtheorem{apulause}[lause]{Apulause}
+% \newtheorem{lemma}[lause]{Lemma}
+
+% Use these versions for individually
+% enumerated lemmas
+% \newtheorem{apulause}{Apulause}[chapter]
+% \newtheorem{lemma}{Lemma}[chapter]
+
+% Definition style
+% \theoremstyle{definition}
+% \newtheorem{maaritelma}{Määritelmä}[chapter]
+% \newtheorem{definition}[maaritelma]{Definition}
+% examples in this style
+
+\usepackage{verbatim}
+
+\usepackage{xparse}
+\RenewDocumentCommand{\newacronym}
+{ m m m O{#2s} O{#3s} }
+{
+    \newglossaryentry{#1}
+    {
+        name={#2},
+        first={#2 (#3)},
+        plural={#4},
+        firstplural={#4 (#5)},
+        description={#3}
+    }
+}
+
+\usepackage{booktabs}
+
+% Inspirational quotes
+\usepackage{scrextend}
+\newcommand{\inspquote}[2]%
+{
+    \vspace{-2em}
+    \begin{addmargin}[.5in]{.5in}
+        \textrm{\textit{``#1``}}
+        \vspace{-1em}
+        \par
+        \raggedleft ---\textrm{#2}
+    \end{addmargin}
+    \vspace{1em}
+}
+
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{dirtree}
+\usepackage[final]{listings}
+\lstset{
+  basicstyle=\small,
+  mathescape
+}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{mathdots}
+
+\renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
+\renewcommand{\phi}{\varphi}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+%%%%% Glossary information.
+
+\loadglsentries[main]{src/glossary.tex}
+\makeglossaries
+
+\addbibresource{references.bib}
+
+\begin{document}
+
+%%%%% FRONT MATTER %%%%%
+
+\frontmatter
+
+%%%%% Thesis information and title page.
+
+% The titles of the work. If there is no subtitle,
+% leave the arguments empty. Pass the title in
+% the primary language as the first argument
+% and its translation to the secondary language
+% as the second.
+\title{Design and implementation of a multi-sensor data recording software}
+    {Erään monisensorijärjestelmän datannauhoitusohjelman suunnittelu ja toteutus}
+\subtitle{}
+    {}
+
+% The author name.
+\author{Juhani Kupiainen}
+
+% The examiner information.
+% If your work has multiple examiners, replace with
+% \examiner[<label>]{<name> \\ <name>}
+% where <label> is an appropriate (plural) label,
+% e.g. Examiners or Tarkastajat, and <name>s are
+% replaced by the examiner names, each on their
+% separate line.
+\examiner[Examiners]{
+    Prof. Mikko Valkama \\
+    Prof. Bo Tan
+}
+
+% The finishing date of the thesis (YYYY-MM-DD).
+%\finishdate{2021}{12}{24}
+\finishdate{\year}{\month}{\day}
+
+% The type of the thesis (e.g. Kandidaatintyö
+% or Master of Science Thesis) in the primary
+% and the secondary languages of the thesis.
+\thesistype{ Master's thesis }{ Diplomityö }
+
+% The faculty and degree programme names in
+% the primary and the secondary languages of
+% the thesis.
+\facultyname
+{ Faculty of Information Technology and Communication Sciences }
+{ Informaatioteknologian ja viestinnän tiedekunta }
+
+\programmename
+{ Master's Programme in Information Technology }
+{ Tietotekniikan DI-ohjelma }
+
+% The keywords to the thesis in the primary and
+% the secondary languages of the thesis
+\keywords%
+    { Human activity recognition, Data set, Sensor fusion, Radar }
+    { Aktiviteetintunnistus, Datasetti, Sensorifuusio, Tutka }
+
+\maketitle
+
+%%%%% Abstracts and preface.
+\abstract{src/abstract.tex}
+\otherabstract{src/tiivistelmä.tex}
+\preface{src/foreword.tex}{Tampere}
+
+%%%%% Table of contents.
+\tableofcontents
+
+%%%%% Lists of figures, tables, listings and terms.
+% \listoffigures
+% \listoftables
+% \lstlistoflistings
+
+% Print the glossary of terms.
+\glossary
+
+%%%%% MAIN MATTER %%%%%
+
+\mainmatter
+
+\chapter{Introduction}
+\label{ch:1-introduction}
+\input{src/1-introduction.tex}
+
+\chapter{Premise}
+\label{ch:2-premise}
+\input{src/2-premise.tex}
+
+\chapter{System implementation}
+\label{ch:3-system}
+\input{src/3-system.tex}
+
+\chapter{Output file formats and post-processing}
+\label{ch:4-files-and-post}
+\input{src/4-file-formats-and-post.tex}
+
+\chapter{System evaluation}
+\label{ch:5-evaluation}
+\input{src/5-evaluation.tex}
+
+\chapter{Conclusion}
+\label{ch:6-conclusion}
+\input{src/6-conclusion.tex}
+
+%%%%% Bibliography/references.
+\printbibliography[heading=bibintoc]
+
+%%%%% Appendices.
+
+\begin{appendices}
+
+\chapter{Radar configuration file used during testing and development of the system}
+\label{app:config}
+\input{./src/appendices/config.tex}
+
+\chapter{DCA1000EVM configuration commands}
+\label{app:dca1000evm-commands}
+\input{./src/appendices/dca1000evm-commands.tex}
+
+\chapter{Parsing the IR recorder output}
+\label{app:ir-parsing}
+\input{./src/appendices/ir-parsing.tex}
+
+\chapter{Parsing the radar data cubes from raw radar data}
+\label{app:get_frames}
+\input{./src/appendices/get_frames.tex}
+
+\chapter{Applying Forward-Backward Spatial Smoothing to a data matrix}
+\label{app:fbss-algorithm}
+\input{./src/appendices/fbss-python-example.tex}
+
+\chapter{Applying 2-D MUSIC algorithm to a radar data cube to estimate the range-azimuth power spectrum}
+\label{app:2d-music-algorithm}
+\input{./src/appendices/2d-music-python-example.tex}
+
+\chapter{Derivation of the range and velocity equations for FMCW radar}
+\label{app:deriving-range-velocity-fft}
+\input{./src/appendices/deriving-range-and-velocity-for-fft.tex}
+
+\chapter{Parsing frames from recorded depth and rgb video}
+\label{app:image-parsing}
+\input{./src/appendices/camera-frame-parsing.tex}
+
+\chaptrer{Parsing the audio file with Python Soundfile}
+\label{app:mic-parsing}
+\input{./src/appendices/mic-parsing.tex}
+
+\end{appendices}
+
+\end{document}

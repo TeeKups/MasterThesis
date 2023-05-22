@@ -1,0 +1,523 @@
+This page is empty on purpose
+\newpage
+
+\section{RESET\_FPGA\_CMD\_CODE}
+Reset FPGA
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x01 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 0 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x01 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{RESET\_AR\_DEV\_CMD\_CODE}
+Reset RADAR EVM
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x02 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 0 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x02 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{CONFIG\_FPGA\_GEN\_CMD\_CODE}
+\label{app:sec:config-fpga}
+Configure FPGA
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x03 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 6 & - & - & Data size \\ \hline
+        Data Logging Mode  & UINT8 & 1 & 1 & 1 & 2 & \makecell{1 -- Raw mode \\ 2 -- Multi mode} \\ \hline
+        LVDS mode          & UINT8 & 1 & 1 & 1 & 2 & \makecell{1 -- 4lane \\ 2 -- 2lane} \\ \hline
+        Data transfer mode & UINT8 & 1 & 1 & 1 & 2 & \makecell{1 -- LVDS capture \\ 2 -- DMM playback } \\\hline
+        Data capture mode  & UINT8 & 1 & 2 & 1 & 2 & \makecell{1 -- SD card storage \\ 2 -- Ethernet stream } \\ \hline
+        Data format mode   & UINT8 & 1 & 2 & 1 & 3 & \makecell{1 -- 12-bit \\ 2 -- 14-bit \\ 3 -- 16-bit } \\ \hline
+        Timer              & UINT8 & 1 & 30 (0x1E) & 0x0 & 0xFF & Timer info in seconds \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x03 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{CONFIG\_EEPROM\_CMD\_CODE}
+Configure EEPROM
+
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{2.75cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{2cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x04 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 6 & - & - & Data size \\ \hline
+        System IP address  & UINT8  & 4 & 192.168.33.30     & 0x0 & 0xFF   & IP address \\\hline
+        FPGA IP address    & UINT8  & 4 & 192.168.33.180    & 0x0 & 0xFF   & IP address \\ \hline
+        FPGA MAC address   & UINT8  & 6 & 12-34-56-78-90-12 & 0x0 & 0xFF   & MAC address \\ \hline
+        \makecell{Configu-\\ration port} & UINT16 & 2 & 4096 & 0x1 & 0xFFFF & Config Port number \\ \hline
+        Data port          & UINT16 & 2 & 4098              & 0x1 & 0xFFFF & Data Port number \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x04 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{RECORD\_START\_CMD\_CODE}
+\label{app:sec:start-record}
+Start record
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x05 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 0 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x05 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{RECORD\_STOP\_CMD\_CODE}
+\label{app:sec:stop-record}
+Stop record
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x06 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 0 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x06 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{PLAYBACK\_START\_CMD\_CODE}
+Not documented.
+
+\section{PLAYBACK\_STOP\_CMD\_CODE}
+Not documented.
+
+\newpage
+\section{SYSTEM\_CONNECT\_CMD\_CODE}
+Query system aliveness status
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x09 & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 0 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x09 & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{SYSTEM\_ERROR\_CMD\_CODE}
+Query record process status
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x0A & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 0 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x0A & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 0xFF & System status code \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{CONFIG\_PACKET\_DATA\_CMD\_CODE}
+Configure record delay
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x0B & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 6 & - & - & Data size \\ \hline
+        Packet Size        & UINT16 & 2 & 1472 & 48 & 1472 & Packet size \\ \hline
+        Delay              & UINT16 & 2 &  25  &  5 & 500  & Inter-packet delay \\ \hline
+        Future Use         & UINT16 & 2 &   0  &  - &   -  & Future Use \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x0B & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & 0 & 0 & 1 & \makecell{0 -- Success \\ 1 -- Failure } \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+\section{CONFIG\_DATA\_MODE\_AR\_DEV\_CMD\_CODE}
+Not documented.
+
+\section{INT\_FPGA\_PLAYBACK\_CMD\_CODE}
+Not documented.
+
+\newpage
+\section{READ\_FPGA\_VERSION\_CMD\_CODE}
+Read FPGA version
+\subsection{Request}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{3.75cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x0E & - & - & Command code \\ \hline
+        Size               & UINT16 & 2 & 9 & - & - & Data size \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Response}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|
+    >{\centering\arraybackslash}p{1.8cm}|
+    >{\centering\arraybackslash}p{1.4cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{1cm}|
+    >{\centering\arraybackslash}p{1.5cm}|
+    >{\centering\arraybackslash}p{3.25cm}|
+    }
+        \hline
+        Name & Data Type & Number of bytes & Default Value & Min Value & Max Value & Description \\
+        \hline
+        Header             & UINT16 & 2 & 0xA55A & - & - & 0xA55A always. Start bits of packet. \\ \hline
+        Command code       & UINT16 & 2 & 0x0E & - & - & Command code \\ \hline
+        Status             & UINT16 & 2 & - & 0 & 0xFFFF & \makecell{0--6th bits ->\\ Major version\\ 7th--13th bits ->\\ Minor version \\ 14th bit -> 0 -- \\ Record bit file \\ 14th bit -> 1 -- \\ Playback bit file} \\ \hline
+        Footer             & UINT16 & 2 & 0xEEAA & - & - & 0xEEAA always. Stop bits of packet. \\
+        \hline
+    \end{tabular}
+\end{table}

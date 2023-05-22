@@ -1,0 +1,58 @@
+As the product of this thesis,
+a multimodal sensor data recording system was produced.
+The implementation of the system was discussed,
+the produced data formats were documented and data processing examples were given to prove the documentation is truthful.
+Additionally, the quality of the system was assessed.
+
+The system is capable of recording five different modalities of data:
+$4 \times 4$ Acoustic, RGB video, Depth video, $9 \times 8$ Infrared video, and mmWave radar signal.
+The system is very portable as the sensors can be mounted on a single bracket that attaches to a camera tri-pod.
+Only a sufficient power source and a computer equipped with an SSD drive are required.
+Wearable sensors were omitted from the system due to being cumbersome.
+Proximity sensors, such as magnetic switches, pressure plates, electrostatic sensors, etc. labour-intensive sensors were also omitted.
+
+The system was designed to be parallel to maximize the data throughput.
+Each sensor has its own recorder subprocess that is controlled by a single main process.
+The subprograms are implemented as modules.
+The system can be extended to include additional sensors by writing a recording module for the sensor,
+and starting it from the main process.
+
+The recorded data from the different sensors was is synchronized in time.
+This means, that given a point in time, a corresponding frame can be easily extracted from any of the sensor outputs.
+In addition, the program provides a way to attach activity labels to the data during recording.
+The activity labels are stored in a separate file and the file format is very simple.
+It is also possible to apply the activity labels after recording.
+Manual labelling can be used for ultimate accuracy, or well-established activity recognition models can be used to detect actions form the RGB video.
+The labels can then be used as ground-truth information to train a machine learning model to recognize activities from the data produced by the other sensors.
+
+The output from each sensor is stored in separate files and each recording is stored in a separate directory.
+Based on the output formats documented in Chapter \ref{ch:4-files-and-post},
+the data may be parsed into other formats, such as the popular \texttt{.mat} format used by MATLAB.
+Additionally, post-processing may be performed on the data to make it more suitable for machine learning.
+Most importantly, the range-angle and range-velocity spectra of the radar may be calculated
+using the algorithms presented in Sections \ref{sec:range-angle} and \ref{sec:doppler-spectrum}.
+
+While the system fulfilled the requirements set for in in Chapter \ref{ch:2-premise},
+some instability was detected when using it,
+which makes the system unusable for carrying out a large-scale data recording campaign.
+For small-scale campaigns, the system is satisfactory.
+
+Sometimes, after starting, the system freezes.
+It is unclear whether this is caused by problems in the parallel design,
+or wheter it is caused by the radar sensor.
+Power-cycling the radar sensor and restarting the program fixed the issue with a high likelihood, though,
+which suggests that the problem may be caused by the radar.
+It should be looked into, if there is some furhter configuration that can be done to the radar device to increase its stability.
+
+Additionally, the range-angle spectrum was extremely noisy in some frames.
+This issue was discussed in Section \ref{sec:5-radar-spectrum-issues}.
+The cause of the noisiness should be investigated.
+It should also be investigated if the issue can be alleviated by using the two-transmitter switching to increase the virtual number
+of receivers from 4 to 8.
+It is also possible that the used radar processing algorithms could be improved to produce a better range-angle estimate.
+
+All in all, the implemented system serves a good basis.
+Some further development must still be done,
+but the system serves as a very good Proof of Concept.
+When the stability issues have been fixed,
+carrying out a larger-scale data collection campaign with the system should be feasible.

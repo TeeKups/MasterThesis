@@ -1,0 +1,85 @@
+As the power of computer grows and capability of sensors increases,
+more and more incredible things are becoming possible.
+One such thing is \gls{har},
+for which the applications are many.
+
+Not only is it possible to detect when people are running or walking \cite{running-walking},
+but even respiratory rates \cite{breathing}, falling down \cite{falling}, shoplifting \cite{shoplifting},
+operating room procedures \cite{operatingroom}, hand gestures \cite{handgestures},
+and certain illnesses \cite{parkinsson} have been proven to be recognizable by sensors.
+The possibilities seem almost limitless.
+
+For long, the focus in \gls{har} research has been in visible spectrum video.
+While it is undeniably a powerful sensing mechanism for the purpose,
+it has multiple major downsides.
+Visible spectrum imaging is very prone to occlusion and lighting conditions.
+In addition, due to face recognition, there are genuine concerns about the privacy issues related to visible spectrum sensing. \cite{sensing-survey}
+Many actions can also look very similar depending on the viewing angle.
+With additional sensors, extra information can be used to better distinguish otherwise similar action from each other.
+
+Wearable sensors are a well-established mechanism human activity recognition \cite{wearables}.
+This is already being used in multiple commercial applications,
+such as exercise and sleep recognition in smart watches.
+The downside of wearable sensors is that they can be cumbersome and unfashionable
+require willful equipping and rarely can be connected to mains.
+Clearly, if high-performance remote sensing can be achieved with a reasonable price,
+it is the superior alternative.
+
+In addition to visible spectrum imaging,
+remote sensors include depth imaging (stereo camera),
+infrared imaging, acoustic sensing (microphones) and electromagnetic sensing (e.g. radar).
+Different kinds of proximity sensors, such as magnetic switches, pressure sensors, temperature sensors,
+and electrostatic proximity sensors can also be used,
+although their installation may be more labour-intensive \cite{sensing-survey}.
+
+It has been shown that depth imaging can achieve at least similar performance in activity recognition as visible spectrum imaging,
+while simultaneously preserving privacy \cite{depth}.
+In complex scenes, using depth imaging can increase the performance of activity recognition substantially \cite{depth-2}.
+Depth imaging still suffers from many of the same problems as visible spectrum imaging,
+most importantly obstruction.
+
+Radar devices are capable of sensing through visual obstructions
+and have been demonstrated to achieve very good performance at \gls{har},
+especially when operating on the \gls{mmwave} spectrum.
+Another upside for radar imaging is that unlike cameras, 
+they are not susceptible to lightning conditions. \cite{radar-survey}
+As a downside, they are active devices in the sense that they must also have an active transmitter.
+Although passive radars exist, the sensing performance is compromised.
+WiFi signals and channel state information have also been demonstrated to be an effective alternative to radar sensing
+in environments where WiFi is available \cite{sensing-survey}.
+
+Even with as low as $8 \times 8$ pixel resolution infrared cameras,
+recognizing some activities has been proven possible.
+In some cases the recognized activities have been very simple,
+such as sitting, standing, or lying on ground \cite{ir-simple-activities}.
+With some additional context information,
+more complex household activities can also be recognized \cite{ir-household}.
+
+Sometimes it bay be hard to distinguish activities from each other based on only a single sensor.
+Consider for example browsing the internet or playing video games on a computer.
+Both involve using the mouse and keyboard, but when playing video games, the keyboard is likely being used more.
+A camera may not be able to sense the use of a keyboard, while a microphone could hear the buttons being pressed.
+Another example is cutting vegetables in the kitchen and making a sandwich.
+A low resolution infrared sensor might only recognize that a person is occupying the same place,
+but may not detect what exactly is being done. A microphone could detect the sound being emitted
+or a radar could detect the distinct velocity spectrum of the activity.
+
+Sensor fusion can provably be leveraged to improve \gls{har} accuracy \cite{fusion1, fusion2}.
+Not a wide range of data sets exist for this purpose and they often consider only a limited number of sensors \cite{sensing-survey}.
+It is important to have a wide range of data sets available for training machine learning models
+and to assess the performance of different sensors and algorithms.
+In the field of machine learning and \gls{har}, transfer learning has also been a subject of much interest in the recent years \cite{transfer}.
+
+For the aforementioned reason,
+it was considered valuable to create a portable multi-modal sensing system that can be used for recording data sets.
+As the product of this thesis, such a system was created.
+The sensors installed in the systems were a combined visible and depth spectrum camera,
+an $8 \times 8$ pixel infrared camera, a $4 \times 4$ channel microphone and a 60 GHz radar.
+
+In Chapter \ref{ch:2-premise}, the sensors used in the system will be presented in more detail.
+Additionally, requirements will be out for the developed system.
+In Chapter \ref{ch:3-system}, the implementation of the system will be detailed on an architectural level.
+Details of the source code will not be discussed. The source code of the project is publicly available for viewing on GitHub \cite{github-link}.
+The data formats produced by the recording system will be documented in Chapter \ref{ch:4-files-and-post} along some data processing examples.
+The quality and performance of the system will be briefly discussed in Chapter \ref{ch:5-evaluation},
+and finally, Chapter \ref{ch:6-conclusion} will conclude the thesis.

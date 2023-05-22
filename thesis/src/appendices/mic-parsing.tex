@@ -1,0 +1,6 @@
+import soundfile
+
+data, samplerate = soundfile.read('audio.wav', dtype='float32')
+
+# All samples of n:th channel
+S = lambda n : data[:, n]

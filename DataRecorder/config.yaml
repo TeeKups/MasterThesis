@@ -1,0 +1,5 @@
+radar:
+  config: 5_2m.cfg
+camera:
+  resolution: [640, 480]
+  fps: 30

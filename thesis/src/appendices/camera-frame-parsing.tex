@@ -1,0 +1,25 @@
+\begin{lstlisting}[language=Python, caption={Code example for parsing depth frames from file}]
+import numpy
+
+with open('depth.raw', 'rb') as f:
+    data = f.read()
+
+resolution = (480, 640)
+d = numpy.frombuffer(data, dtype='int16')
+frames = d.reshape((-1, *resolution), order='C')
+
+F = lambda j : frames[j]  # get j:th frame
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Code example for parsing rgb frames from file}]
+import numpy
+
+with open('rgb.raw', 'rb') as f:
+    data = f.read()
+
+resolution = (480, 640)
+d = numpy.frombuffer(data, dtype='uint8')
+frames = d.reshape((-1, *resolution, 3), order='C')
+
+F = lambda j : frames[j]  # get j:th frame
+\end{lstlisting}

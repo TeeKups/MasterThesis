@@ -1,0 +1,200 @@
+Figure \ref{fig:beat-frequency} illustrates the transmitted chirp and and the reflected echo
+from one target. Denoting the transmitted chirp as $c(t)$ and the reflected echo as $r(t)$,
+the difference between the two is called the beat signal $s_{b}$ as defined by
+equation \ref{eq:beat-signal}.
+\begin{equation}
+    \label{eq:beat-signal}
+    s_{b}(t) = c(t) - r(t)
+\end{equation}
+
+The frequency of the beat signal is called the beat frequency $f_{b}(t)$,
+and it is estimated by applying the discrete Fourier transform to the beat signal.
+Given the signal is sampled $N$ times during a single chirp with a sampling frequency of $f_{s}$,
+the discrete Fourier transform will result in $N$ range bins,
+hence the resolution of the Fourier transform is as given by equation \ref{eq:beat-frequency-resolution}.
+\begin{equation}
+    \label{eq:beat-frequency-resolution}
+    \Delta f_{b} = \frac{f_{s}}{N}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/placeholder.png}
+    \caption{Transmitted signal, reflected echo, and beat frequency.}
+    \label{fig:beat-frequency}
+\end{figure}
+
+\section{Deriving the range equation}
+Assuming the radar is of monostatic kind and not moving,
+the beat frequency is produced solely by the delay caused by the round-trip-time from the radar to the target and back
+and the Doppler-shift caused by the target.
+Assuming the signal is propagating at the speed of light, the round-trip-time $T_{\mathrm{RTT}}$ is given by equation \ref{eq:beat-frequency-rtt},
+and the Doppler-shift $\Delta f_{d}$ by equation \ref{eq:beat-frequency-doppler}.
+\begin{equation}
+    \label{eq:beat-frequency-rtt}
+    T_{\mathrm{RTT}} = \frac{2R_{l}}{c}
+\end{equation}
+
+\begin{equation}
+    \label{eq:beat-frequency-doppler}
+    \Delta f_{d} = \frac{v_{l}}{c}f_{c}
+\end{equation}
+
+Because the slope $s$ of the signal is constant,
+the beat frequency is linearly proportional to round-trip time.
+The beat frequency of the reflection from the $l$:th target 
+is given by equation \ref{eq:frequency-at-receiver}.
+\begin{equation}
+    \label{eq:frequency-at-receiver}
+    f_{b, l} = s \frac{2 R_{l}}{c} + \Delta f_{d, l}
+\end{equation}
+
+When the doppler shift of the $l$:th target is much lower than the beat frequency resolution, 
+i.e. $\Delta f_{d,l} \ll \Delta f_{b}$, the equation \ref{eq:frequency-at-receiver} can be approximated
+as given by equation \ref{eq:frequency-at-receiver-approx},
+thus the range of the target on range $R_{l}$ is given by equation \ref{eq:target-range-fft}.
+\begin{equation}
+    \label{eq:frequency-at-receiver-approx}
+    f_{b, l} \approx \frac{2 R_{l} s}{c}
+\end{equation}
+\begin{equation}
+    \label{eq:target-range-fft}
+    R_{l} \approx \frac{f_{b,l} c}{2s}
+\end{equation}
+
+By combining the equations \ref{eq:beat-frequency-resolution} and \ref{eq:target-range-fft},
+the range resolution of the fast-time Fourier transform is given by \ref{eq:range-resolution}.
+\begin{equation}
+    \label{eq:range-resolution}
+    \Delta R = \frac{\Delta f_{b} c}{2s}
+\end{equation}
+
+Due to complex sampling, the maximum frequency observable by the receiver is
+equal to the sampling frequency. Thus, the maximum beat frequency and thereby maximum range is dictated
+by the sampling frequency. The maximum range is given by equation \ref{eq:max-range}.
+\begin{equation}
+    \label{eq:max-range}
+    R_{\mathrm{max}} = \frac{f_{s} c}{2s}
+\end{equation}
+
+\section{Velocity equation}
+The change of the phase of a signal after it has been transmitted
+is given by the wavelength and distance travelled (equation \ref{eq:phase-range-relation}).
+Upon reflection, the signal experiences a phase change of $\pi$ radians and the frequency of the signal
+changes due to Doppler shift.
+\begin{equation}
+    \label{eq:phase-range-relation}
+    \Delta \phi (R, f) = 2\pi \left( \frac{R}{\lambda} - \left\lfloor \frac{R}{\lambda} \right\rfloor \right)
+    = 2\pi \left( \frac{fR}{c} - \left\lfloor \frac{fR}{c} \right\rfloor \right)
+\end{equation}
+
+Equation \ref{eq:phase-range-relation} is a surjection but not a bijection,
+thus the range of the target cannot be determined from the range unless it is less than the wavelength
+when the floor function term ($\lfloor \cdot \rfloor$) becomes zero and the function becomes a bijection.
+The special case is shown by equation \ref{eq:phase-range-relation-special-case}.
+\begin{equation}
+    \label{eq:phase-range-relation-special-case}
+    \forall R \in [0, \lambda] : \Delta \phi (R, f) = 2\pi \frac{fR}{c} 
+\end{equation}
+
+When the signal reflects off a target, it experiences a phase change of $\pi$ radians.
+The phase of the received reflection is thus given by equation \ref{eq:received-phase}
+
+\begin{equation}
+    \label{eq:received-phase}
+    \phi_{\mathrm{RX}}(R,f) = \phi_{\mathrm{TX}}
+    + \Delta \phi(R, f) + \pi + \Delta \phi(R, f+\frac{v}{c}f)
+\end{equation}
+
+Because phase is linearly proportional to range,
+as shown by equation \ref{eq:phase-range-relation-special-case},
+the phase difference between the signals reflected from two targets moving at the same velocity
+can be calculated as shown by equation \ref{eq:phase-diff-to-range-diff}.
+
+\begin{equation}
+    \label{eq:phase-diff-to-range-diff}
+    \begin{aligned}
+    \Delta \phi(R_1, R_2,f) &= \Delta \phi(R_1, f) + \pi + \Delta \phi(R_1, f+\frac{v}{c}f) \\
+        &- \left( \Delta \phi(R_2, f) + \pi + \Delta \phi(R_2, f+\frac{v}{c}f)  \right) \\
+        &= \Delta \phi(R_1, f) + \Delta \phi(R_1, f+\frac{v}{c}f) \\
+        &- \Delta \phi(R_2, f) - \Delta \phi(R_2, f+\frac{v}{c}f) 
+    \end{aligned}
+\end{equation}
+
+Again assuming $R_1 - R_2 < \lambda$, the equation \ref{eq:phase-diff-to-range-diff} can be evaluated as
+given by equation \ref{eq:phase-diff-to-range-diff-expanded}.
+
+\begin{equation}
+    \label{eq:phase-diff-to-range-diff-expanded}
+    \begin{aligned}
+        \forall R_1 &- R_2 \in [0, \lambda] : \Delta \phi(R_1, R_2, f) \\
+        &= 2\pi f R_1 \left( \frac{1+\frac{v}{c} }{c} \right)
+        - 2\pi f R_2 \left( \frac{1+\frac{v}{c} }{c} \right) \\
+        &= 2\pi f (R_1-R_2) \left( \frac{1+\frac{v}{c} }{c} \right)
+    \end{aligned}
+\end{equation}
+
+The frequency of a sinusoidal wave can be expressed as $f = \omega \div (2\pi)$,
+where $\omega$ is the phase velocity of the wave.
+Given the phase difference of a single-tone signal sampled 
+at a time interval of $T_{c}$ is $\Delta \phi_{T_{c}}$,
+the corresponding frequency can be calculated using equation \ref{eq:phase-diff-to-freq}.
+\begin{equation}
+    \label{eq:phase-diff-to-freq}
+    \Delta \phi_{T_{c}} = 2 \pi f T_{c}
+    \Leftrightarrow
+    f = \frac{ \Delta \phi_{T_{c}} }{ 2\pi T_{c} }
+\end{equation}
+
+From the properties of discrete Fourier transform,
+it is known that the frequency resolution for the transform is $\Delta f = 1 \div T_{c}$.
+Because the target can have either a positive or negative velocity,
+both positive and negative frequencies may be induced by the change in range.
+Hence, the domain of interest for the slow-time Fourier transform is
+$f \in [-\frac{1}{2T_{c}}, \frac{1}{2T_{c}}]$.
+The corresponding set of phase shifts is $\phi \in [- \pi, \pi]$
+and the phase resolution of the transform is $\Delta \phi = \frac{2\pi}{M}$.
+
+Given the signal is sampled $M$ times at the rate of $T_{c}$,
+the frequency resolution ($\Delta f$) for a discrete Fourier transform of the signal is $M \div T_{c}$.
+Thus, the velocity required for a Doppler-shift to induce an error of one bin ($v_\mathrm{err}$)
+is given by equation \ref{eq:doppler-error-velocity}.
+Given $M = 64$, $f = 60~\mathrm{GHz}$ and $T_{c} = 260~\mathrm{\mu s}$
+(realistic values for an \gls{fmcw} radar), $v_\mathrm{err} \approx 1230~\frac{\mathrm{m}}{\mathrm{s}}$.
+\begin{equation}
+    \label{eq:doppler-error-velocity}
+    \frac{v_\mathrm{err}}{c}f = \frac{M}{T_{c}}
+    \Leftrightarrow 
+    v_\mathrm{err} = \frac{cM}{f T_{c}}
+\end{equation}
+
+Given $v \ll v_\mathrm{err}$, the equation \ref{eq:phase-diff-to-range-diff-expanded}
+can be approximated as given by equation \ref{eq:phase-diff-to-range-diff-expanded-approx}.
+\begin{equation}
+    \label{eq:phase-diff-to-range-diff-expanded-approx}
+    \begin{aligned}
+        \forall R_1 &- R_2 \in [0, \lambda] : \Delta \phi(R_1, R_2 ,f) \\
+        &= \frac {2\pi f (R_1-R_2)}{c}
+    \end{aligned}
+\end{equation}
+
+Substituting $\Delta \phi$ in equation \ref{eq:phase-diff-to-range-diff-expanded-approx}
+with the frequency resolution and denoting $R_1 - R_2 = 2 \Delta R$ 
+(change in target range causes twice the change in propagation distance),
+the equation can be solved for $\Delta R$ to acquire the range resolution
+for the slow-time Fourier transform. Dividing the value with the sampling interval $T_{c}$,
+the minimum and maximum velocity and the velocity resolution can be calculated as given by equations
+\ref{eq:slow-time-velocity-resolution} and \ref{eq:slow-time-velocity-max}.
+\begin{equation}
+    \label{eq:slow-time-velocity-resolution}
+    \Delta v = \frac{\Delta \phi c}{4 \pi f T_{c}} 
+    = \frac{2 \pi c}{4 M \pi f T_{c}} 
+    = \frac{c}{2 M f T_{c}}
+\end{equation}
+\begin{equation}
+    \label{eq:slow-time-velocity-max}
+    \begin{cases}
+        v_{\mathrm{max}} = \frac{\phi c}{4 \pi f T_{c}} = \frac{c}{4 f T_{c}}\\
+        v_{\mathrm{min}} = \frac{- \phi c}{4 \pi f T_{c}} = \frac{-c}{4 f T_{c}}
+    \end{cases}
+\end{equation}

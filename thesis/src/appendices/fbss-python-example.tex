@@ -1,0 +1,30 @@
+The listing \ref{lst:fbss-code} shows an example implementation of the \gls{fbss} algorithm written in python.
+The first argument for the function is a radar data cube, consisting of $M$ chirps sampled $N$ times on $K$ receivers.
+The dimensions of the data cube are $K \times M \times N$.
+The second and third argument are the dimensions of the scanning window,
+and the last argument is the index of a chirp in the data cube; $m \in \left[ 0, M \right)$.
+
+\begin{lstlisting}[language=Python, caption={Code example for applying forward-backward spatial smoothing to a data matrix.}\label{lst:fbss-code}]
+import numpy
+def covariance_FBSS(data_cube, q1, q2, m):
+    K = data_cube.shape[0]
+    N = data_cube.shape[2]
+    p1 = K-q1
+    p2 = N-q2
+
+    J = numpy.fliplr(numpy.identity(q1*q2))
+    
+    chirp = data_cube[:, m, :]
+    d = lambda pp1, pp2 : \
+        chirp[pp1:pp1+q1, pp2:pp2+q2].flatten('F')
+        
+    D = None
+    for pp1 in range(p1):
+        for pp2 in range(p2):
+            D = numpy.column_stack( (D, d(pp1, pp2)) ) \
+                if D is not None else d(pp1, pp2)
+
+    DD = D @ D.conj().T
+    D_cov = (1/(2*p1*p2)) * ( DD + J @ DD.T @ J)
+    return D_cov
+\end{lstlisting}

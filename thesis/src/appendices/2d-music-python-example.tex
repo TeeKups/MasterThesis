@@ -1,0 +1,75 @@
+Listings \ref{lst:2d-music-code-1}--\ref{lst:2d-music-code-2} show an example of aplying the \gls{2d-music} algorithm to a radar data cube
+with dimensions $K \times M \times N$, where $K$ is the number of active receivers, 
+$M$ is the number of recorded dwells and $N$ is the number of samples per dwell.
+
+The first argument for the function defined in Listing \ref{lst:2d-music-code-2} is the radar data cube.
+The second and third are respectively the range and \gls{aoa} bins the spectrum shall be estimated for.
+The fourth argument is the slope of the chirp $S = \Delta f \div T_c$, where $S$ is the slope of the chirp,
+$\Delta f$ is the change in frequency of the chirp during sampling and $T_c$ is the duration of the chirp.
+The fifth argument is the sampling frequency and the sixth and final argument is the carrier frequency of the modulated chirp signal.
+
+The number of targets $L$ in the algorithm is estimated using \gls{aic}, as described by Wax and Kailath \cite{wax-kailath-85}.
+
+\begin{lstlisting}[
+    language=Python,
+    caption={Code example for estimating the range-azimuth spectrum for a radar data cube using the 2D-MUSIC algorithm. (Part 1/2)}\label{lst:2d-music-code-1}
+]
+import numpy
+from scipy import constants
+from scipy import pi as PI
+def music(frame, ranges, angles, slope, fs, fc):
+    K, M, N = frame.shape
+    wlen = constants.c / fc
+    d = wlen / 2
+    p1 = 2; p2 = 2
+    q1 = K-p1; q2 = N-p2
+
+    cov_mtx = numpy.mean( numpy.array(
+        [ covariance_FBSS(frame, q1, q2, m) for m in numpy.arange(M) ]
+    ), axis=0 )
+\end{lstlisting}
+\newpage
+
+Listing \ref{lst:2d-music-code-2} is continuation to listing \ref{lst:2d-music-code-1}.
+\begin{lstlisting}[
+    language=Python,
+    caption={Code example for estimating the range-azimuth spectrum for a radar data cube using the 2D-MUSIC algorithm. (Part 2/2)}\label{lst:2d-music-code-2}
+]
+    eigvals, eigvecs = numpy.linalg.eigh(cov_mtx)
+    # sort largest first so noise subspace is in the end
+    sort_order = numpy.flip(numpy.argsort(eigvals))
+    eigvecs = eigvecs[:,sort_order]
+    W = eigvecs[:, L+1:]
+
+    p = len(eigvals)
+    def AIC(l):
+        numerator = numpy.prod(eigvals[l:]) ** (1/(p-l))
+        denominator = (1 / (p-l)) * numpy.mean(eigvals[l:])
+        exponent = ((p-l)*(K))
+        sum_factor = 2*l*(2*p-l)
+
+        return -2*numpy.log10(
+            (numerator/denominator)
+        ) ** exponent + sum_factor
+
+    L = numpy.argmin(numpy.array([AIC(l) for l in range(p)]))
+    steering_vec = lambda theta: numpy.exp(
+        1j*((2*PI)/wlen) * d*numpy.arange(q1) * numpy.sin(theta)
+    )
+    
+    range_vec = lambda r: numpy.exp(
+        1j*2*PI * ((2*r)/constants.c) * slope*numpy.arange(q2)*(1/fs)
+    )
+    
+    alpha = lambda a, r: numpy.outer(
+        steering_vec(a), range_vec(r)
+    ).reshape((-1,1), order='F')
+    
+    range_spectrum = lambda r, theta: 1 / (
+        alpha(theta, r).conj().T @ W @ W.conj().T @ alpha(theta, r)
+    )
+    
+    P = lambda theta : numpy.vectorize(range_spectrum)(ranges, theta)
+    spectrum = numpy.array([P(theta) for theta in angles])
+    return abs(spectrum)**2
+\end{lstlisting}
