@@ -1,4 +1,7 @@
-\begin{lstlisting}[language=Python, caption={Code example for parsing depth frames from file}]
+Listing \ref{lst:depth-parsing} shows an example of parsing the frames from the \texttt{depth.raw} file.
+Listing \ref{lst:rgb-parsing} shows a similar example, but for the \texttt{rgb.raw} file.
+
+\begin{lstlisting}[language=Python, caption={Code example for parsing depth frames from file}\label{lst:depth-parsing}]
 import numpy
 
 with open('depth.raw', 'rb') as f:
@@ -11,7 +14,7 @@ frames = d.reshape((-1, *resolution), order='C')
 F = lambda j : frames[j]  # get j:th frame
 \end{lstlisting}
 
-\begin{lstlisting}[language=Python, caption={Code example for parsing rgb frames from file}]
+\begin{lstlisting}[language=Python, caption={Code example for parsing rgb frames from file}\label{lst:rgb-parsing}]
 import numpy
 
 with open('rgb.raw', 'rb') as f:
