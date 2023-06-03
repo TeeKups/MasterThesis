@@ -5,9 +5,9 @@ the produced data formats were documented and data processing examples were give
 Additionally, the quality of the system was assessed.
 
 The system is capable of recording five different modalities of data:
-$4 \times 4$ Acoustic, RGB video, Depth video, $9 \times 8$ Infrared video, and mmWave radar signal.
+$4 \times 4$ acoustic, RGB video, depth video, $8 \times 8$ infrared video, and mmWave radar signal.
 The system is very portable as the sensors can be mounted on a single bracket that attaches to a camera tri-pod.
-Only a sufficient power source and a computer equipped with an SSD drive are required.
+Only a sufficient power source and a computer equipped with an \gls{ssd} drive are required.
 Wearable sensors were omitted from the system due to being cumbersome.
 Proximity sensors, such as magnetic switches, pressure plates, electrostatic sensors, etc. labour-intensive sensors were also omitted.
 
@@ -17,7 +17,7 @@ The subprograms are implemented as modules.
 The system can be extended to include additional sensors by writing a recording module for the sensor,
 and starting it from the main process.
 
-The recorded data from the different sensors was is synchronized in time.
+The recorded data from the different sensors is synchronized in time.
 This means, that given a point in time, a corresponding frame can be easily extracted from any of the sensor outputs.
 In addition, the program provides a way to attach activity labels to the data during recording.
 The activity labels are stored in a separate file and the file format is very simple.
@@ -39,10 +39,10 @@ For small-scale campaigns, the system is satisfactory.
 
 Sometimes, after starting, the system freezes.
 It is unclear whether this is caused by problems in the parallel design,
-or wheter it is caused by the radar sensor.
+or whether it is caused by the radar sensor.
 Power-cycling the radar sensor and restarting the program fixed the issue with a high likelihood, though,
 which suggests that the problem may be caused by the radar.
-It should be looked into, if there is some furhter configuration that can be done to the radar device to increase its stability.
+It should be looked into, if there is some further configuration that can be done to the radar device to increase its stability.
 
 Additionally, the range-angle spectrum was extremely noisy in some frames.
 This issue was discussed in Section \ref{sec:5-radar-spectrum-issues}.
@@ -56,3 +56,10 @@ Some further development must still be done,
 but the system serves as a very good Proof of Concept.
 When the stability issues have been fixed,
 carrying out a larger-scale data collection campaign with the system should be feasible.
+
+Even with small data sets, some preliminary research may be done with the system, especially considering transfer learning.
+Machine learning models trained with other data sets can be evaluated on data sets recorded on this system to see how the performance carries over.
+In addition, once the stability issues are fixed in the system,
+the data can even be used for training machine learning models.
+With the portable system, high quality data sets should be possible to collect,
+which will enable high-performance human activity recognition using remote sensing in various environments.

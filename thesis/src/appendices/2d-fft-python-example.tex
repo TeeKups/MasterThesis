@@ -8,28 +8,26 @@ second dimension to the chirps and third dimensions to the samples of each chirp
     caption={Code example for estimating the range-velocity spectrum for a radar data cube using the 2D-FFT algorithm. (Part 1/2)}\label{lst:2d-fft-code}
 ]
 import numpy
-
 def range_velocity(frame):
     K, M, N = frame.shape
-
-    C_1 = 1  ## Stetson-Harrison method
-    C_2 = 2  ## Stetson-Harrison method
+    C_1 = 1; C_2 = 2  ## Stetson-Harrison method
     lower = int((M/2-C_1/2)+0.5)
     upper = int((M/2+C_1/2)+0.5)
 
     range_filter_coefficients = numpy.diag(
         [ 0 if c in range(0, C_2) else 1 for c in range(N) ]
     )
-
     velocity_filter_coefficients = numpy.diag(
         [ 0 if c in range(lower, upper) else 1 for c in range(M) ]
     )
 
     bins = numpy.mean(frame, axis=0)
     fast_time_fft = numpy.fft.fft(bins, axis=1)
-
     slow_time_fft = numpy.fft.fft(fast_time_fft, axis=0)
     shifted = numpy.fft.fftshift(slow_time_fft, axes=(0))
-
-    return abs(velocity_filter_coefficients @ (range_filter_coefficients @ shifted.T).T)**2
+    
+    return abs(
+        velocity_filter_coefficients 
+        @ (range_filter_coefficients @ shifted.T).T
+    )**2
 \end{lstlisting}

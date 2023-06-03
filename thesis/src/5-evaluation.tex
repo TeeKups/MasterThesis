@@ -4,8 +4,8 @@ Additionally, the extensibility and stability of the software are considered.
 
 \section{Time synchronization of data}
 The criterion for data synchronization was defined in \ref{sec:2-requirements}.
-The frame number $n$ that corresponds to a moment in time $t$ is given by the equation $n = \mathrm{round}(N_{s} t)$,
-where $N_{s}$ is the sampling rate (equation \ref{eq:time-to-sample}).
+The frame number \gls{framenumber} that corresponds to a moment in time \gls{time} is given by the equation $\gls{framenumber} = \lfloor \gls{framerate} \gls{time} \rfloor$,
+where \gls{framerate} is the frame rate (equation \ref{eq:time-to-sample}).
 This holds true for any of the data sources.
 Thus, if a frame corresponding to the same point in time is extracted from each data source,
 high correlation should be seen between the frames.
@@ -26,7 +26,6 @@ it could be concluded that the sound and audio recordings are synchronized.
     \begin{subfigure}[t]{0.3\textwidth}
     \includegraphics[width=\textwidth]{fig/5/ir_t_7.0.png}
         \caption{IR frame}
-        \label{fig:my_label}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.3\textwidth}
@@ -38,7 +37,7 @@ it could be concluded that the sound and audio recordings are synchronized.
         \includegraphics[width=\textwidth]{fig/5/radar_t_7.0.png}
         \caption{Radar angle-range spectrum}
     \end{subfigure}
-    \caption{IR, RGB and radar frames, $t = 7.0$}
+    \caption{IR, RGB and radar frames, $\gls{time} = 7.0$.}
     \label{fig:5-frames-1}
 \end{figure}
 
@@ -47,7 +46,6 @@ it could be concluded that the sound and audio recordings are synchronized.
     \begin{subfigure}[t]{0.3\textwidth}
         \includegraphics[width=\textwidth]{fig/5/ir_t_24.0.png}
         \caption{IR frame}
-        \label{fig:my_label}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.3\textwidth}
@@ -59,7 +57,7 @@ it could be concluded that the sound and audio recordings are synchronized.
         \includegraphics[width=\textwidth]{fig/5/radar_t_24.0.png}
         \caption{Radar angle-range spectrum}
     \end{subfigure}
-    \caption{IR, RGB and radar frames, $t = 24.0$}
+    \caption{IR, RGB and radar frames, $\gls{time} = 24.0$.}
     \label{fig:5-frames-2}
 \end{figure}
 
@@ -78,7 +76,7 @@ it could be concluded that the sound and audio recordings are synchronized.
         \includegraphics[width=\textwidth]{fig/5/radar_t_53.0.png}
         \caption{Radar angle-range spectrum}
     \end{subfigure}
-    \caption{IR, RGB and radar frames, $t = 53.0$}
+    \caption{IR, RGB and radar frames, $\gls{time} = 53.0$.}
     \label{fig:5-frames-3}
 \end{figure}
 
@@ -153,12 +151,12 @@ It may be worth investigating if using the two transmitter switching to increase
     \centering
     \begin{subfigure}[t]{0.49\textwidth}
         \includegraphics[width=\textwidth]{fig/5/bad-spectrum-example-radar.png}
-        \caption{Radar angle-range spectrum}
+        \caption{Radar angle-range spectrum.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
         \includegraphics[width=\textwidth]{fig/5/bad-spectrum-example-rgb.png}
-        \caption{Corresponding RGB image}
+        \caption{Corresponding RGB image.}
     \end{subfigure}
     \caption{Example of a very noisy radar range-angle spectrum.}
     \label{fig:bad-radar-example}

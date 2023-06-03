@@ -1,0 +1,11 @@
+Listing \ref{lst:ir-parsing} shows a code example for parsing the \gls{ir} frames from the \texttt{ir-raw} file.
+
+\begin{lstlisting}[language=Python, caption={Code example for parsing infrared from file}\label{lst:ir-parsing}]
+import numpy
+
+with open('ir.raw', 'rb') as _file:
+    data = _file.read()
+
+d = numpy.frombuffer(data,  dtype='float16')
+ir_frames = d.reshape((-1,8,8), order='C')
+\end{lstlisting}

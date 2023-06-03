@@ -1,14 +1,14 @@
 Listings \ref{lst:2d-music-code-1}--\ref{lst:2d-music-code-2} show an example of applying the \gls{2d-music} algorithm to a radar data cube
-with dimensions $K \times M \times N$, where $K$ is the number of active receivers, 
-$M$ is the number of recorded dwells and $N$ is the number of samples per dwell.
+with dimensions $\gls{numrcv} \times \gls{numchirps} \times \gls{numsamples}$, where $\gls{numrcv}$ is the number of active receivers, 
+$\gls{numchirps}$ is the number of recorded dwells and $\gls{numsamples}$ is the number of samples per dwell.
 
 The first argument for the function defined in Listing \ref{lst:2d-music-code-2} is the radar data cube.
 The second and third are respectively the range and \gls{aoa} bins the spectrum shall be estimated for.
-The fourth argument is the slope of the chirp $S = \Delta f \div T_c$, where $S$ is the slope of the chirp,
-$\Delta f$ is the change in frequency of the chirp during sampling and $T_c$ is the duration of the chirp.
+The fourth argument is the slope of the chirp $\gls{slope} = \gls{bandwidth} \div \gls{chirptime}$, where $\gls{slope}$ is the slope of the chirp,
+\gls{bandwidth} is the bandwidth of the chirp during sampling and \gls{chirptime} is the duration of the chirp.
 The fifth argument is the sampling frequency and the sixth and final argument is the carrier frequency of the modulated chirp signal.
 
-The number of targets $L$ in the algorithm is estimated using \gls{aic}, as described by Wax and Kailath \cite{wax-kailath-85}.
+The number of targets $\gls{numtargets}$ in the algorithm is estimated using \gls{aic}, as described by Wax and Kailath \cite{wax-kailath-85}.
 
 \begin{lstlisting}[
     language=Python,

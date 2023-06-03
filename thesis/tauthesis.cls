@@ -105,7 +105,7 @@
         %
     }
 \else
-    \RequirePackage[pagewise, displaymath, mathlines]{lineno}
+    \RequirePackage[pagewise, mathlines]{lineno}
     \linenumbers
 
     \RequirePackage{moreverb}
@@ -300,9 +300,6 @@
     \lstset{texcl=true, captionpos=b, commentstyle=\tt}
 \fi
 
-% List of symbols and abbreviations
-\RequirePackage[automake, nonumberlist, nopostdot]{glossaries}
-
 %\renewcommand*{\glsnamefont}[1]{\textmd{#1}}
 
 \if@langenglish
@@ -313,38 +310,21 @@
     \newcommand{\@appendixname}{Liite}
 \fi
 
+% List of symbols and abbreviations
+\RequirePackage{hyperref}
+\RequirePackage[automake, nonumberlist, nopostdot, nomain, order=word]{glossaries-extra}
 \newlength\glsnamewidth
-\newglossarystyle{taulong}{%
-    \setglossarystyle{long}%
-    \renewenvironment{theglossary}{%
-      \tablehead{}%
-      \tabletail{}%
-      \begin{longtable}{p{\glsnamewidth}p{\glsdescwidth}}%
-    }{%
-      \end{longtable}%
-    }%
-    \renewcommand{\glossentry}[2]{%
-    \raggedright
-    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
-    \glossentrydesc{##1}\glspostdescription\space ##2\tabularnewline
-    }%
-}
-
-\renewcommand{\glossary}{
-    \glsaddall
-    \setglossarystyle{long}
-    \setlength{\glsnamewidth}{0.25\textwidth}
-    \setlength{\glsdescwidth}{0.75\textwidth}
-    \renewcommand*{\glsgroupskip}{}
-    \printglossary[title=\@glossaryname]
-}
+\setglossarystyle{long}
+\setlength{\glsnamewidth}{0.25\textwidth}
+\setlength{\glsdescwidth}{0.75\textwidth}
+\renewcommand*{\glsgroupskip}{}
 
 % Table of contents formatting
 \RequirePackage{titletoc}
 
 \titlecontents{chapter}[0pt]{}%
     {\parbox[t]{2em}{\thecontentslabel.}}{}{\titlerule*[1pc]{.}\contentspage}
-\dottedcontents{section}[4em]{}{2em}{1pc}
+\dottedcontents{section}[4em]{}{2.5em}{1pc}
 \dottedcontents{subsection}[7em]{}{3em}{1pc}
 
 \newenvironment{appendices}{%

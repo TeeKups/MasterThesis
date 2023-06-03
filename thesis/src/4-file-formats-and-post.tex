@@ -16,7 +16,7 @@ The file names and a general description of the content is documented in Table \
     timestamps.csv & Activity labels and time stamps \\
     \bottomrule
     \end{tabular}
-    \caption{Files output by the software}
+    \caption{Files output by the software.}
     \label{tab:3-files}
 \end{table}
 
@@ -30,7 +30,7 @@ The following sections will document the exact formats of the file
 and present some relevant data processing algorithms for each data file format.
 
 \section{Activity labels and time stamps}
-The activity labels and their corresponding time stamps are stored in the file \texttt{timestamps.csv}.
+The activity labels and their corresponding timestamps are stored in the \texttt{timestamps.csv} file.
 As implied by the file name, the file follows the \gls{csv} format, delimited by the comma character (",", unicode U+002C).
 The file contains two columns.
 The first column contains time stamps and the second column contains labels.
@@ -47,20 +47,21 @@ Listing \ref{lst:labels} provides an example of the file.
 
 The activities are sorted by time in an ascending order.
 The time stamps tell the time elapsed since the beginning of the recording.
-The frame rate for each sensor is recorded in the \texttt{metadata.yaml} file.
+The frame rate (\gls{framerate}) for each sensor is recorded in the \texttt{metadata.yaml} file.
 Based on the timestamps and the frame rate of each sensor, the mapping between frames and labels can be made.
-The time of recording $t_{\mathrm{min}}$, $t_{\mathrm{max}}$ for a given frame can be calculated via equation \ref{eq:frame-number-to-time},
-where $N_{s}$ is the sampling rate of the sensor and $n$ is the frame number.
+The time of recording (from \gls{time-min} to \gls{time-max}) for a given frame can be calculated 
+based on the frame number \gls{framenumber}
+via equation \ref{eq:frame-number-to-time}.
 
 \begin{equation}
     \label{eq:frame-number-to-time}
     \begin{cases}
-        t_{\mathrm{min}} = \frac{n}{N_{s}} \\
-        t_{\mathrm{max}} = \frac{n+1}{N_{s}}
+        \gls{time-min} = \frac{\gls{framenumber}}{\gls{framerate}} \\
+        \gls{time-max} = \frac{\gls{framenumber}+1}{\gls{framerate}}
     \end{cases}
 \end{equation}
 
-Given $t_{\mathrm{min}} \leq T < t_{\mathrm{max}}$, where $T$ is the timestamp of an activity, the activity should be mapped to the frame.
+Given $\gls{time-min} \leq \gls{time} < \gls{time-max}$, where \gls{time} is the timestamp of an activity, the activity should be mapped to the frame.
 
 \section{IR camera record}
 \label{sec:ir-file}
@@ -70,18 +71,18 @@ Each pixel is represented by a half-precision (16-bit) floating point number.
 The values represent the recorded temperatures in each pixel.
 
 The pixels of each frame are stored in row-major order,
-thus denoting the vector containing the recorded values as $\vec{d}$,
+thus denoting the vector containing the recorded values as \gls{data},
 the frames can be represented by equation $\ref{eq:ir-frame}$,
-where $\vec{F}_{z}$ is the $z$:th frame, $n$ is the row of a pixel and $m$ is the column of a pixel.
+where \gls{frame-z} is the \gls{framenumber}:th frame, \gls{pixelrow} is the row of a pixel and \gls{pixelcol} is the column of a pixel.
 
 \begin{equation}
     \label{eq:ir-frame}
-    \forall n \in [0, 7] \land m \in [0, 7] \land j \in \left[ 0, \frac{|d|}{64} \right] : \vec{F}_{z}(n, m) = \vec{d}(64z+8n+m)
+    \forall \gls{pixelrow} \in [0, 7] \land \gls{pixelcol} \in [0, 7] \land \gls{framenumber} \in \left[ 0, \frac{|\gls{data}|}{64} \right] : \gls{frame-z}(\gls{pixelrow}, \gls{pixelcol}) = \gls{data}(64\gls{framenumber}+8\gls{pixelrow}+\gls{pixelcol})
 \end{equation}
 
 The origin of the image is in the upper left corner.
 Figure \ref{fig:ir-orig} shows an example frame parsed from the file and \ref{fig:ir-rgb} shows the corresponding RGB image.
-The data in frame $\vec{F}_z$  may be used as-is, but the resolution of the image may be increased by interpolating.
+The data in frame \gls{frame-z}  may be used as-is, but the resolution of the image may be increased by interpolating.
 Figures \ref{fig:ir-interp-2x} and \ref{fig:ir-interp-4x} illustrate the effects of increasing the resolution of the original image
 to 16x16 and 32x32 using cubic interpolation.
 A code example in Python for parsing the frames from the file is given in Appendix \ref{app:ir-parsing}.
@@ -91,28 +92,28 @@ A code example in Python for parsing the frames from the file is given in Append
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ir-orig.pdf}
-        \caption{Original 8x8 image}
+        \caption{Original 8x8 image.}
         \label{fig:ir-orig}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ir16.pdf}
-        \caption{Upscaled 16x16 image}
+        \caption{Original image upscaled to 16x16 by interpolation.}
         \label{fig:ir-interp-2x}
     \end{subfigure}
     \vskip\baselineskip
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ir32.pdf}
-        \caption{Upscaled 32x32 image}
+        \caption{Original image upscaled to 32x32 by interpolation.}
         \label{fig:ir-interp-4x}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ir-rgb.pdf}
-        \caption{Corresponding RGB image}
+        \caption{Corresponding RGB image.}
         \label{fig:ir-rgb}
     \end{subfigure}
     \caption{An \gls{ir} frame interpolated to different higher resolutions and the corresponding RGB frame.}
@@ -122,15 +123,15 @@ A code example in Python for parsing the frames from the file is given in Append
 \section{Radar samples}
 \label{sec:radar-file}
 The Texas Instruments mmWave Radar Device ADC Raw Data Capture application report defines multiple data formats for the DCA1000EVM data output format,
-which is also the format the data is stored in the \texttt{radar.raw} file \cite{dca1000-raw-data-capture}.
-Combined with the TI6843ISK radar module, the data formats are limited to only one option \cite{mmwave-sdk-user-guide}.
+which is also the format the data is stored in the \texttt{radar.raw} file~\cite{dca1000-raw-data-capture}.
+Combined with the TI6843ISK radar module, the data formats are limited to only one option~\cite{mmwave-sdk-user-guide}.
 The data is sampled in the \gls{iq} format.
 Given there are $N$ samples per chirp, $M$ chirps per frame, and $K$ active receivers,
 the data can be arranged to radar cubes and frames via the procedure explained in Section \ref{sec:radar-data}.
 
 After the raw data has been rearranged into radar cubes and frames of complex data,
 numerous radar processing algorithms can be applied to the data to extract valuable information about the targets.
-Algorithms for detecting targets in the range-azimuth domain and obtaining time-doppler spectra for the targets are presented in Section \ref{sec:radar-processing}.
+Algorithms for calculating the range-angle spectrum, range-velocity spectrum, and detecting targets are presented in Sections \ref{sec:range-angle}--\ref{sec:cfar}.
 
 Throughout this section, the symbols listed in Table \ref{tab:radar-symbols} are used.
 The values represented by the symbols are stored in the \texttt{metadata.yaml} file
@@ -146,15 +147,15 @@ The keys that correspond to the values of the symbols and the meanings of the sy
          $N$ & samples\_per\_chirp & Number of samples per chirp \\
          $M$ & chirps\_per\_frame & Number of chirps per frame \\
          $K$ & num\_channels & Number of active receivers \\
-         $T_c$ & chirp\_cycle\_time & Time between each frame [s] \\
-         -- & framerate & Number of frames (radar cubes) recorded per second [Hz] \\
-         $F_s$ & samplerate & Sampling frequency in the receivers [Hz] \\
+         $T_{\mathrm{c}}$ & chirp\_cycle\_time & Time between each frame [s] \\
+         $N_{\mathrm{FPS}}$ & framerate & Number of frames (radar cubes) recorded per second [Hz] \\
+         \gls{samplerate} & samplerate & Sampling frequency in the receivers [Hz] \\
          $S$ & slope & Slope of the transmitted chirp [Hz/s] \\
     \bottomrule
     \end{tabular}
     \caption{
-        Symbols used throughout this section, their corresponding keys in the \texttt{metadata.yaml} file and their meanings.
-        Framerate is not used in this section, thus it has no symbol.
+        Values that are recorded in in the \texttt{radar} section of the \texttt{metadata.yaml} file,
+        their meanings, and corresponding symbols.
     }
     \label{tab:radar-symbols}
 \end{table}
@@ -163,92 +164,107 @@ The keys that correspond to the values of the symbols and the meanings of the sy
 \label{sec:radar-data}
 
 Based on the metadata, the raw samples in the \texttt{radar.raw} file can be rearranged into radar cubes.
-Each radar cube consists of $N \times M \times K$ complex samples as illustrated in Figure \ref{fig:radar-cube}
+Each radar cube consists of $\gls{numsamples} \times \gls{numchirps} \times \gls{numrcv}$ complex samples as illustrated in Figure \ref{fig:radar-cube}
 Each complex sample in the raw data consists of two values: the in-phase and the quadrature component.
 Both components are represented as 16-byte integers in the raw data.
 
-Denoting the raw 16-byte integer samples as $\vec{d}$, the real (in-phase) and imaginary (quadrature) components
+Denoting the raw 16-byte integer samples as \gls{data}, the real (in-phase) and imaginary (quad-rature) components
 of the complex samples can be extracted with the following formulas:
 
 \begin{equation}
-    \forall x \in \left[ 0, \frac{|d|}{2} \right] \begin{split}
+    \forall x \in \left[ 0, \frac{| \gls{data} |}{2} \right] : \begin{split}
         \begin{cases}
-            \vec{d}_r(x) = \vec{d}(4x) \\
-            \vec{d}_i(x) = \vec{d}(4x+2)
+            \gls{realdata}(x) = \gls{data} (4x) \\
+            \gls{imagdata}(x) = \gls{data} (4x+2)
         \end{cases} ,\bmod(n, 2) = 0 \\
         \begin{cases}
-            \vec{d}_e(x) = \vec{d}(4x+1) \\
-            \vec{d}_i(x) = \vec{d}(4x+3)
+            \gls{realdata}(x) = \gls{data} (4x+1) \\
+            \gls{imagdata}(x) = \gls{data} (4x+3)
         \end{cases} ,\bmod(x, 2) \neq 0
     \end{split}
 \end{equation}
 
-where $\vec{d}_{r}(x)$ is the $x$:th element of the vector containing the real samples,
-and alike, $\vec{d}_{i}(x)$ is the $x$:th element of the vector containing the imaginary samples.
-Thus, the vector containing the complex samples $\vec{s}$ is given by equation \ref{eq:complex-samples}, where $j$ is the imaginary unit.
+where $\gls{realdata}(x)$ is the $x$:th element of the vector containing the real samples,
+and alike, $\gls{imagdata}(x)$ is the $x$:th element of the vector containing the imaginary samples.
+Thus, the vector containing the complex samples \gls{samples-vec} is given by equation \ref{eq:complex-samples}, where \gls{imag-unit} is the imaginary unit.
 
 \begin{equation}
     \label{eq:complex-samples}
-    \vec{s} = \vec{d}_{r} + j\vec{d}_{i}
+    \gls{samples-vec} = \gls{realdata} + \gls{imag-unit} \gls{imagdata}
 \end{equation}
 
-Each $N \times M \times K$ elements of $\vec{s}$ constitute a single radar cube.
-The samples for the $z$:th cube (or frame), denoted as $\vec{s}_{z}$, can be extracted from $\vec{s}$ as given by equation \ref{eq:z-samples} 
+Each $\gls{numsamples} \times \gls{numchirps} \times \gls{numrcv}$ elements of \gls{samples-vec} constitute a single radar cube.
+The samples for the \gls{framenumber}:th cube (or frame), denoted as \gls{samples-vec-frame}, can be extracted from \gls{samples-vec} as given by equation \ref{eq:z-samples} 
 
 \begin{equation}
     \label{eq:z-samples}
-    \vec{s}_{z} = \begin{bmatrix} \vec{s}(zNMK) & \vec{s}(zNMK+1) & \ldots & \vec{s}(zNMK+(NMK-1)) \end{bmatrix} ^{T}
+    \gls{samples-vec-frame} = \begin{bmatrix}
+        \gls{samples-vec}(\gls{framenumber}\gls{numsamples}\gls{numchirps}\gls{numrcv}) &
+        \gls{samples-vec}(\gls{framenumber}\gls{numsamples}\gls{numchirps}\gls{numrcv}+1) &
+        \ldots 
+        & \gls{samples-vec}(\gls{framenumber}\gls{numsamples}\gls{numchirps}\gls{numrcv}+(\gls{numsamples}\gls{numchirps}\gls{numrcv}-1))
+    \end{bmatrix} ^{\gls{transpose}}
 \end{equation}
 
-Each radar cube consists of $M \times K$ chirps, whereas each chirp consists of $N$ samples.
-Each $N$ samples in $\vec{s}$ constitutes for a chirp, thus the $m$:th chirp in $\vec{s}_{z}$, i.e. $\vec{c}_{m}$, is given by equation \ref{eq:c_m}.
+Each radar cube consists of $\gls{numchirps} \times \gls{numrcv}$ chirps, whereas each chirp consists of $\gls{numsamples}$ samples.
+Each $\gls{numsamples}$ samples in \gls{samples-vec-frame} constitutes for a chirp, thus the $\gls{chirpnumber}$:th chirp in \gls{samples-vec-frame}, i.e. \gls{chirp-m}, is given by equation \ref{eq:c_m}.
 
 \begin{equation}
     \label{eq:c_m}
-    \vec{c}_{m} = \begin{bmatrix} \vec{s}_{z}(mN) & \vec{s}_{z}(mN+1) & \ldots & \vec{s}_{z}(mN+(N-1))  \end{bmatrix} ^T
+    \gls{chirp-m} = \begin{bmatrix}
+        \gls{samples-vec-frame}(mN) &
+        \gls{samples-vec-frame}(\gls{chirpnumber}\gls{numsamples}+1) &
+        \ldots &
+        \gls{samples-vec-frame}(\gls{chirpnumber}\gls{numsamples}+(\gls{numsamples}-1)) 
+    \end{bmatrix}^{\gls{transpose}}
 \end{equation}
 
-The chirps are organized in such way in the data that each $K$ chirps are sampled at the same time,
+The chirps are organized in such way in the data that each \gls{numrcv} chirps are sampled at the same time,
 but in different receivers.
-Thus, the frame $\vec{s}_{z}$ can be reshaped into a tensor $\vec{S}_{z}$ via the transformation given by equation \ref{eq:transformation}.
+Thus, the frame \gls{samples-vec-frame} can be reshaped into a tensor \gls{cube-z} via the transformation given by equation \ref{eq:transformation}.
 
 \begin{equation}
     \label{eq:transformation}
-    \vec{S}_{z} =
+    \gls{cube-z} =
         \begin{bmatrix}
-            \vec{c}_{0}   & \vec{c}_{K}    & \vec{c}_{2K} & \ldots & \vec{c}_{(M-1)K}   \\
-            \vec{c}_{1}   & \vec{c}_{K+1}  & \vec{c}_{2K+1} & \ldots & \vec{c}_{(M-1)K+1} \\
+            \gls{chirp}_{0}   & \gls{chirp}_{\gls{numrcv}}    & \gls{chirp}_{2\gls{numrcv}} & \ldots & \gls{chirp}_{(\gls{numchirps}-1)\gls{numrcv}}   \\
+            \gls{chirp}_{1}   & \gls{chirp}_{\gls{numrcv}+1}  & \gls{chirp}_{2\gls{numrcv}+1} & \ldots & \gls{chirp}_{(\gls{numchirps}-1)\gls{numrcv}+1} \\
             \vdots        & \vdots         & \vdots       & \ddots & \vdots             \\
-            \vec{c}_{K-1} & \vec{c}_{2K-1} & \vec{c}_{3K-1} & \ldots & \vec{c}_{MK-1}
+            \gls{chirp}_{\gls{numrcv}-1} & \gls{chirp}_{2\gls{numrcv}-1} & \gls{chirp}_{3\gls{numrcv}-1} & \ldots & \gls{chirp}_{\gls{numchirps}\gls{numrcv}-1}
         \end{bmatrix}
 \end{equation}
 
-For each sample in $\vec{S}_z$ that has the same first dimension index has an equal sampling time.
-The sampling time increases by $T_c$ for each index in the second dimension of $\vec{S}_z$ and 
-by $\Delta t$ for each index in the third dimension.
-The third dimension is the index of the vectors $\vec{c}_m$.
-The dimensions of the tensor $\vec{S}_z$ are therefore equal to the radar data cube presented in Figure \ref{fig:radar-cube}.
+For each sample in \gls{cube-z} that has the same first dimension index has an equal sampling time.
+The sampling time increases by \gls{chirptime} for each index in the second dimension of \gls{cube-z} and 
+by $1 \div \gls{samplerate}$ for each index in the third dimension.
+The third dimension is the index of the vectors \gls{chirp-m}.
+The dimensions of the tensor \gls{cube-z} are therefore equal to the radar data cube presented in Figure \ref{fig:radar-cube}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{fig/4/radar-cube.pdf}
-    \caption{Radar cube with dimensions corresponding to $\vec{S}_y$.}
+    \caption{Radar cube with dimensions corresponding to \gls{cube-z}.}
     \label{fig:radar-cube}
 \end{figure}
 
-Using the described transformations, the vector $\vec{s}$ can be transformed into a 4-dimensional tensor $\vec{S}$
+Using the described transformations, the vector \gls{samples-vec} can be transformed into a 4-dimensional tensor \gls{radarcube-array} given by \ref{eq:radarcube-array}.
+The Appendix \ref{app:get_frames} presents an example of parsing the tensor $\vec{S}$ from the \texttt{radar.raw} file using Python and Numpy.
 
 \begin{equation}
-    \vec{S} = \begin{bmatrix} \vec{S}_0 & \vec{S}_1 & \vec{S}_2 & \ldots & \vec{S}_Y & \end{bmatrix}^T,
+    \label{eq:radarcube-array}
+    \gls{radarcube-array} = \begin{bmatrix}
+        \gls{radarcube-array}_0 &
+        \gls{radarcube-array}_1 &
+        \gls{radarcube-array}_2 &
+        \ldots &
+        \gls{radarcube-array}_{| \gls{samples-vec} | \div \gls{numsamples} \gls{numchirps} \gls{numrcv} }
+    \end{bmatrix}^{\gls{transpose}}
 \end{equation}
-
-where $Y = | \vec{s} | \div (NMK)$ is the number of recorded frames.
-The Appendix \ref{app:get_frames} presents an example of parsing the tensor $\vec{S}$ from the \texttt{radar.raw} file using Python and Numpy.
 
 To turn the radar data cubes into useful information,
 multiple data processing algorithms can be applied to the data.
-Since most \gls{har} methods for radar signals use the Doppler-spectrum,
-the most interesting information is the target positions and the Doppler spectra \cite{sensing-survey}.
+Since most \gls{har} methods for radar signals use the velocity spectrum,
+the most interesting information is the target positions and the corresponding velocity spectra~\cite{sensing-survey}.
 The position information can be used to track the targets and get continuous time-Doppler data for a given target.
 Additionally, the position information can be used to aid in the microphone beam forming.
 
@@ -262,75 +278,77 @@ and finally, Section \ref{sec:doppler-spectrum} briefly covers the \gls{fft} bas
 For extracting the range-azimuth data from the radar signals,
 \gls{2d-music} is one of the most attractive methods.
 Compared to the traditional \gls{fft} based methods, the \gls{2d-music} can achieve significantly better resolution
-in both the angular domain and the range domain \cite{2d-music-van-rossum}.
+in both the angular domain and the range domain~\cite{2d-music-van-rossum}.
 A major downside of the \gls{2d-music} algorithm is extremely high computational load and memory usage.
 The use of \glspl{fpga} or \glspl{asic} may be used in applications to make the computations faster.
 
 The radar device used in the sensor assembly can be configured to switch between two transmitting antennas,
 such that odd chirps are transmitted on a different antenna than even chirps.
-If this feature is used, the effective amount of spatial channels in the radar data is $2K$,
-and each two radar cubes can be combined along the first axis to form another data cube.\cite{ti-iwr-user-guide}
-Based on this, a new tensor $\vec{S}^\prime$ can be defined along a new variable $K^\prime$ that is the number of active receivers.
+If this feature is used, the effective amount of spatial channels in the radar data is $2\gls{numrcv}$,
+and each two radar cubes can be combined along the first axis to form another data cube.~\cite{ti-iwr-user-guide}
+Based on this, a new tensor $\gls{radarcube-array-other}$ can be defined along a new variable $\gls{numrcv-other}$ that is the number of active receivers.
 
 \begin{align}
     &\begin{cases}
-        \vec{S}^{\prime}(z) = (\vec{S}(2z) | \vec{S}(2z+1)) \\
-        K^\prime = 2K
-    \end{cases}&,~\mathrm{if~switching~between~transmitters}
+        \forall \gls{framenumber} \in \left[ 0, \frac{ |\gls{samples-vec}| }{2\gls{numsamples}\gls{numchirps}\gls{numrcv}} \right] :
+            \gls{radarcube-array-other}(z) = (\gls{radarcube-array}(2z) | \gls{radarcube-array}(2z+1)) \\
+        \gls{numrcv-other} = 2\gls{numrcv}
+    \end{cases},&&\text{if switching transmitters}
     \\
     &\begin{cases}
-        \vec{S}^{\prime}(z) = \vec{S}(z) \\
-        K^\prime = K
-    \end{cases}&,~\mathrm{othwerwise}
+        \gls{radarcube-array-other} = \gls{radarcube-array} \\
+        \gls{numrcv-other} = \gls{numrcv}
+    \end{cases},&&\text{othwerwise}
 \end{align}
 
 The tensor augmentation operation $(\vec{A} | \vec{B})$ is defined by the transformation \\
-$(\vec{A}^{K \times N \times M}, \vec{B}^{K \times N \times M}) \to \vec{(A|B)}^{2K \times N \times M}$, given by
-equation \ref{eq:tensor-augmentation} where the magnitude of each element $|~(\vec{A}|\vec{B})(k, n)~| = M$.
+$(\vec{A}^{\gls{numrcv} \times \gls{numchirps} \times \gls{numsamples}}, \vec{B}^{\gls{numrcv} \times \gls{numchirps} \times } \gls{numsamples}) \to \vec{(A|B)}^{2\gls{numrcv} \times \gls{numchirps} \times \gls{numsamples}}$, given by
+equation \ref{eq:tensor-augmentation} where the magnitude of each element $|~(\vec{A}|\vec{B})(\gls{rcvnumber}, \gls{chirpnumber})~| = \gls{numsamples}$.
 
 \begin{equation}
 \label{eq:tensor-augmentation}
     (\vec{A} | \vec{B}) =
     \begin{bmatrix}
-        \vec{A}(0, 0) & \vec{A}(0, 1) & \ldots & \vec{A}(0, M) \\
-        \vec{A}(1, 0) & \vec{A}(1, 1) & \ldots & \vec{A}(1, M) \\
+        \vec{A}(0, 0) & \vec{A}(0, 1) & \ldots & \vec{A}(0, M-1) \\
+        \vec{A}(1, 0) & \vec{A}(1, 1) & \ldots & \vec{A}(1, M-1) \\
         \vdots        & \vdots        & \ddots & \vdots        \\
-        \vec{A}(K, 0) & \vec{A}(K, 1) & \ldots & \vec{A}(K, M) \\
-        \vec{B}(0, 0) & \vec{B}(0, 1) & \ldots & \vec{B}(0, M) \\
-        \vec{B}(1, 0) & \vec{B}(1, 1) & \ldots & \vec{B}(1, M) \\
+        \vec{A}(K-1, 0) & \vec{A}(K-1, 1) & \ldots & \vec{A}(K-1, M-1) \\
+        \vec{B}(0, 0) & \vec{B}(0, 1) & \ldots & \vec{B}(0, M-1) \\
+        \vec{B}(1, 0) & \vec{B}(1, 1) & \ldots & \vec{B}(1, M-1) \\
         \vdots        & \vdots        & \ddots & \vdots        \\
-        \vec{B}(K, 0) & \vec{B}(K, 1) & \ldots & \vec{B}(K, M) \\
+        \vec{B}(K-1, 0) & \vec{B}(K-1, 1) & \ldots & \vec{B}(K-1, M-1) \\
     \end{bmatrix},
 \end{equation}
 
+Similar to \gls{cube-z}, the \gls{framenumber}:th radar cube in \gls{radarcube-array-other} can be denoted by \gls{cube-z-other}.
 Using these definitions, the \gls{2d-music} spectrum can be calculated.
-The first and third dimension of the tensor $\vec{S}^{\prime}$ constitute for the samples recorded during a single dwell,
-i.e. a chirp. It can be represented by the tensor $\vec{D}_m$, given by equation \ref{eq:tensor-D}.
-The part of the data cube represented by $\vec{D}_m$ is highlighted in Figure \ref{fig:tensor-D}.
+The first and third dimension of the tensor \gls{cube-z-other} constitute for the samples recorded during a single dwell,
+i.e. a chirp. It can be represented by the tensor \gls{dwell-m}, given by equation \ref{eq:tensor-D}.
+The part of the data cube represented by \gls{dwell-m} is highlighted in Figure \ref{fig:tensor-D}.
 
 \begin{equation}
 \label{eq:tensor-D}
-    \vec{D}_m = \begin{bmatrix} \vec{S}^{\prime}(0, m) & \vec{S}^{\prime}(1, m) & \ldots & \vec{S}^{\prime}(K^{\prime}, m)  \end{bmatrix} ^T
+    \gls{dwell-m} = \begin{bmatrix} \gls{cube-z-other}(0, m) & \gls{cube-z-other}(1, m) & \ldots & \gls{cube-z-other}(K^{\prime}, m)  \end{bmatrix}^{\gls{transpose}}
 \end{equation}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{fig/4/radar-cube-tensor-D.pdf}
-    \caption{The part of the radar data cube represented by the tensor $\vec{D}_m$ is highlighted in red ($m = 1$).}
+    \includegraphics[width=0.8\textwidth]{fig/4/radar-cube-tensor-D.pdf}
+    \caption{The part of the radar data cube represented by the tensor \gls{dwell-m} is highlighted in red ($\gls{chirpnumber} = 1$).}
     \label{fig:tensor-D}
 \end{figure}
 
-Under the narrowband assumption, the samples of the tensor $\vec{D}_m$ can be modeled
-as given by equation \ref{eq:sample-approximation} \cite{music-based-algo}.
+Under the narrowband assumption, the samples of the tensor \gls{dwell-m} can be modeled
+as given by equation \ref{eq:sample-approximation}~\cite{music-based-algo}.
 The symbols used in the equation  are defined in Table \ref{tab:sample-approximation-variables}.
 
 \begin{equation}
 \label{eq:sample-approximation}
-\vec{D}_{m} (k, n) =
-    \sum_{l=0}^{L-1} \alpha_{l} e^{j \phi_{l}} ~
-        e^{j 2 \pi \frac{2 R_{l} \Delta F}{c T} n \Delta t } ~
-        e^{ j \frac{2 \pi}{ \lambda } d k \sin \theta_{l}}
-        + \omega(k, n).
+\gls{dwell-m} (\gls{rcvnumber}, \gls{samplenumber}) =
+    \sum_{\gls{targetnumber}=0}^{\gls{numtargets}-1} \gls{alpha-l} e^{\gls{imag-unit} \gls{phase}} ~
+        e^{\gls{imag-unit} 2 \pi \frac{2 \gls{range-l} \gls{bandwidth}}{\gls{lightspeed} \gls{dwell-time} \gls{framerate}} \gls{samplenumber} } ~
+        e^{\gls{imag-unit} \frac{2 \pi}{ \gls{wavelen} } \gls{rcv-dist} \gls{rcvnumber} \sin \gls{azimuth-l}}
+        + \gls{noise}.
 \end{equation}
 
 \begin{table}[]
@@ -339,47 +357,48 @@ The symbols used in the equation  are defined in Table \ref{tab:sample-approxima
     \toprule
         \textbf{Symbol} & \textbf{Definition} \\
     \midrule
-        $k$ & Index of an antenna in the receiving uniform linear array \\
-        $n$ & Index of a fast-time sample in $\vec{c}_z$\\
-        $L$ & Number of reflecting radar targets \\
-        $\alpha_{l}$ & Amplitude of the reflected signal from the $l$:th target \\
-        $e^{j \phi_{l}}$ & Phase of the reflected signal from the $l$:th target\\
-        $R$ & Range from the receiver to the $l$:th target \\
-        $\Delta F$ & The bandwidth of the signal during the sampling time \\
-        $\Delta t$ & Sampling time: inverse of the sampling frequency \\
-        $c$ & The speed of light \\
-        $T$ & Dwell time: $N \Delta t$\\
-        $\theta_{l}$ & Angle of arrival of the signal reflected from the $l$:th target \\
-        $\omega(k, n)$ & Additive white Gaussean noise in the $n$:th sample of the $k$:th receiver \\
+        \gls{rcvnumber} & Index of an antenna in the receiving uniform linear array \\
+        \gls{samplenumber} & Index of a fast-time sample in \gls{chirp-m}\\
+        \gls{numtargets} & Number of reflecting radar targets \\
+        \gls{alpha-l} & Amplitude of the reflected signal from the $l$:th target \\
+        $e^{\gls{imag-unit} \gls{phase}}$ & Phase of the reflected signal from the $l$:th target\\
+        \gls{range-l} & Range from the receiver to the $l$:th target \\
+        \gls{bandwidth} & The bandwidth of the chirp \\
+        \gls{samplerate} & Sampling frequency \\
+        \gls{lightspeed} & The speed of light \\
+        \gls{dwell-time} & Dwell time: $\gls{numsamples} \div \gls{framerate}$\\
+        \gls{azimuth-l} & Angle of arrival of the signal reflected from the $l$:th target \\
+        $\gls{noise}$ & Additive white Gaussean noise in the \gls{samplenumber}:th sample of the \gls{rcvnumber}:th receiver \\
+        \gls{rcv-dist} & The distance between adjacent receivers \\
     \bottomrule
     \end{tabular}
     \caption{Definitions of the symbols used in equation \ref{eq:sample-approximation}.}
     \label{tab:sample-approximation-variables}
 \end{table}
 
-The tensor $\vec{D}_m$ also be represented in matrix format as shown by the equations 
+The tensor \gls{dwell-m} may also be represented in matrix format as shown by the equations 
 \ref{eq:matrix-sample-approximation-1}--\ref{eq:matrix-sample-approximation-6}.
 
 \begin{align}
 \label{eq:matrix-sample-approximation-1}
-    &\vec{D}_m = \vec{A}\vec{X}\vec{R} + \vec{W} \\
+    &\gls{dwell-m} = \gls{angle-matrix}\vec{X}\gls{range-matrix} + \gls{noise-matrix} \\
 \label{eq:matrix-sample-approximation-2}
-    &\vec{A} = \begin{bmatrix} \vec{a}(\theta_0) & \vec{a}(\theta_1) \ldots & \vec{a}(\theta_{L-1}) \end{bmatrix}_{K \times L} \\
+    &\gls{angle-matrix} = \begin{bmatrix} \gls{angle-vector}(\gls{angle-az}_0) & \gls{angle-vector}(\gls{angle-az}_1) \ldots & \gls{angle-vector}(\gls{angle-az}_{\gls{numtargets}-1}) \end{bmatrix}_{\gls{numrcv} \times \gls{numtargets}} \\
 \label{eq:matrix-sample-approximation-3}
-    &\vec{X} = \begin{bmatrix} \alpha_{0}~e^{j\phi_{0}} & & & \\ & \alpha_{1}~e^{j\phi_{1}} & & \\ & & \ddots & \\ & & & \alpha_{L-1}~e^{j\phi_{L-1}} \end{bmatrix}_{L \times L} \\
+    &\vec{X} = \begin{bmatrix} \alpha_{0}~e^{\gls{imag-unit}\gls{phase}_{0}} & & & \\ & \alpha_{1}~e^{\gls{imag-unit}\gls{phase}_{1}} & & \\ & & \ddots & \\ & & & \alpha_{L-1}~e^{\gls{imag-unit}\gls{phase}_{\gls{numtargets}-1}} \end{bmatrix}_{\gls{numtargets} \times \gls{numtargets}} \\
 \label{eq:matrix-sample-approximation-4}
-    &\vec{R} = \begin{bmatrix} \vec{r}(R_0) & \vec{r}(R_1) \ldots & \vec{r}(R_{L-1}) \end{bmatrix}_{N \times L} \\
+    &\gls{range-matrix} = \begin{bmatrix} \gls{range-vector}(\gls{range}_0) & \gls{range-vector}(\gls{range}_1) \ldots & \gls{range-vector}(\gls{range}_{\gls{numtargets}-1}) \end{bmatrix}_{\gls{numsamples} \times \gls{numtargets}} \\
 \label{eq:matrix-sample-approximation-5}
-    &\vec{a}(\theta_l) = \begin{bmatrix} 1 & e^{ j \frac{2 \pi}{ \lambda } d \sin \theta_{l}} & \ldots  & e^{ j \frac{2 \pi}{ \lambda } d(K-1) \sin \theta_{l}} \end{bmatrix}_{1 \times K}^{T} \\
+    &\gls{angle-vector}(\gls{angle-az}_{\gls{targetnumber}}) = \begin{bmatrix} 1 & e^{ \gls{imag-unit} \frac{2 \pi}{ \gls{wavelen} } \gls{rcv-dist} \sin \gls{angle-az}_{\gls{targetnumber}}} & \ldots & e^{ \gls{imag-unit} \frac{2 \pi}{ \gls{wavelen} } \gls{rcv-dist}(\gls{numrcv}-1) \sin \gls{angle-az}_{\gls{targetnumber}}} \end{bmatrix}_{1 \times \gls{numrcv}} \\
 \label{eq:matrix-sample-approximation-6}
-    &\vec{r}(R_l) = \begin{bmatrix} 1 & e^{j 2 \pi \frac{2 R_{l} \Delta F}{c T} \Delta t } & \ldots & e^{j 2 \pi \frac{2 R_{l} \Delta F}{c T} (N-1) \Delta t } \end{bmatrix}_{1 \times N}
+    &\gls{range-vector}(\gls{range}_{\gls{targetnumber}}) = \begin{bmatrix} 1 & e^{ \gls{imag-unit} 2 \pi \frac{2 \gls{range}_{\gls{targetnumber}} \gls{bandwidth}}{\gls{lightspeed} \gls{dwell-time} \gls{samplerate}} } & \ldots & e^{ \gls{imag-unit} 2 \pi \frac{2 \gls{range}_{\gls{targetnumber}} \gls{bandwidth}}{\gls{lightspeed} \gls{dwell-time} \gls{samplerate}} (\gls{numsamples}-1) } \end{bmatrix}_{1 \times \gls{numsamples}}
 \end{align}
 
 Equation \ref{eq:matrix-sample-approximation-1} is equivalent to equation \ref{eq:sample-approximation}.
-In equation \ref{eq:matrix-sample-approximation-1}, $\vec{A}$ is the angle steering matrix consisting of the steering vectors $\vec{a(\theta_0)}$ ... $\vec{a(\theta_{L-1})}$.
-The matrix $\vec{S}$ is the range steering matrix which consists of the range steering vectors $\vec{r}(R_0)$ ... $\vec{r}(R_{L-1})$.
+In equation \ref{eq:matrix-sample-approximation-1}, \gls{angle-matrix} is the angle steering matrix consisting of the steering vectors $\gls{angle-vector}(\theta_0)$ ... $\gls{angle-vector}(\gls{angle-az}_{\gls{numtargets}-1})$.
+The matrix \gls{range-matrix} is the range steering matrix which consists of the range steering vectors $\gls{range-vector}(\gls{range}_0)$ ... $\gls{range-vector}(\gls{range}_{\gls{numtargets}-1})$.
 The diagonal matrix $\vec{X}$ contains the complex amplitudes and phases of the reflected signals.
-Finally, the $\vec{W}$ is the additive white Gaussean noise matrix.
+Finally, the \gls{noise-matrix} is the additive white Gaussian noise matrix.
 Using this information, the \gls{2d-music} algorithm can be applied to calculate the range-azimuth spectrum.
 
 The \gls{2d-music} algorithm is based on evaluation of the covariance matrix of the received signal and the separation of noise and target signal subspaces.
@@ -387,19 +406,19 @@ Multiple sweeps (chirps) are typically used for evaluating the covariance matrix
 The noise and target signal subspaces are estimated from the covariance matrix by applying eigenvalue decomposition to the covariance matrix.
 The resulting eigenvalues are then used to estimate the number of targets to separate the subspaces.
 The \gls{2d-music} spectrum is then estimated from the correlation of the noise subspace
-and the range-azimuth steering matrix given by equation \ref{eq:steering-matrix}. \cite{2d-music-van-rossum}
+and the range-azimuth steering matrix given by equation \ref{eq:steering-matrix}.~\cite{2d-music-van-rossum}
 
 When the reflected signals are correlated, which is the case when a target spans multiple range or angle bins,
 the dimension of the signal subspace is not equal to the number of targets.
-This can be solved by applying smoothing techniques, such as \gls{fbss}, to the data. \cite{2d-music-van-rossum, fbss-techniques}
+This can be solved by applying smoothing techniques, such as \gls{fbss}, to the data.~\cite{2d-music-van-rossum, fbss-techniques}
 
-For a $K^{\prime} \times N$ matrix, the \gls{fbss} algorithm is applied by defining a window with dimensions $q_1 \times q_2$,
+For a $\gls{numrcv-other} \times \gls{numsamples}$ matrix, the \gls{fbss} algorithm is applied by defining a window with dimensions $\gls{smoothing-wnd-rows} \times \gls{smoothing-wnd-cols}$,
 and then scanning the data matrix in all possible positions: 
-$p_1 = K^{\prime} - q_1$ positions in the angular dimension and $p_2 = N - m_2$ positions in the range dimension.
-For each scanning position, the sub-matrix is flattened in column-major order to form the vector $\vec{d}(\tilde{p}_1, \tilde{p}_2)$,
-where $\tilde{p}_2 \in \left[ 0, p_1 \right)$ and $\tilde{p}_2 \in \left[ 0, p_2 \right) $.
-The vectors $\vec{d}(\tilde{p}_1, \tilde{p}_2)$ are then stacked column-wise to form the spatial-smoothed data matrix $\vec{\tilde{D}}_m$.
-The scanning procedure is illustrated in Figure \ref{fig:data-matrix-scanning}. \cite{2d-music-van-rossum, music-based-algo}
+$\gls{num-smoothing-rows} = \gls{numrcv-other} - \gls{smoothing-wnd-rows}$ positions in the angular dimension and $\gls{num-smoothing-cols} = \gls{numsamples} - \gls{smoothing-wnd-cols}$ positions in the range dimension.
+For each scanning position, the sub-matrix is flattened in column-major order to form the vector $\gls{smoothing-vector}(\gls{smoothing-row}, \gls{smoothing-col})$,
+where $\gls{smoothing-row} \in \left[ 0, \gls{num-smoothing-cols} \right)$ and $\gls{smoothing-col} \in \left[ 0, \gls{num-smoothing-cols} \right) $.
+The vectors $\gls{smoothing-vector}(\gls{smoothing-row}, \gls{smoothing-col})$ are then stacked column-wise to form the spatial-smoothed data matrix \gls{smoothed-matrix}.
+The scanning procedure is illustrated in Figure \ref{fig:data-matrix-scanning}.~\cite{2d-music-van-rossum, music-based-algo}
 
 \begin{figure}[H]
     \centering
@@ -410,38 +429,39 @@ The scanning procedure is illustrated in Figure \ref{fig:data-matrix-scanning}. 
 
 \begin{equation}
 \label{eq:fbss-scanning}
-    \vec{\tilde{D}}_m = \begin{bmatrix}  \vec{d}(0, 0) & \vec{d}(1, 0) & \ldots & \vec{d}(p_{1}-1, 0) & \vec{d}(0, 1) & \vec{d}(1, 1) \ldots & \vec{d}(p_{1}-1, p_{2}-1) \end{bmatrix}
+    \gls{smoothed-matrix} = \begin{bmatrix}  \gls{smoothing-vector}(0, 0) & \gls{smoothing-vector}(1, 0) & \ldots & \gls{smoothing-vector}(\gls{num-smoothing-cols}-1, 0) & \gls{smoothing-vector}(0, 1) & \gls{smoothing-vector}(1, 1) \ldots & \gls{smoothing-vector}(\gls{num-smoothing-cols}-1, \gls{num-smoothing-rows}-1) \end{bmatrix}
 \end{equation}
 
-The resulting dimensions of $\vec{\tilde{D}}_m$ are $q_{1}q_{2} \times p_{1}p_{2}$.
-The vectors $\vec{d}(\tilde{p}_1, \tilde{p}_2)$ are given by equation \ref{eq:scanning}.
+The resulting dimensions of \gls{smoothed-matrix} are $\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols} \times \gls{num-smoothing-rows}\gls{num-smoothing-cols}$.
+The vectors $\gls{smoothing-vector}(\gls{smoothing-row}, \gls{smoothing-col})$ are given by equation \ref{eq:scanning}.
 
 \begin{equation}
     \label{eq:scanning}
-    \vec{d}(\tilde{p}_1, \tilde{p}_2) = \begin{bmatrix} 
-        \vec{D}_{m}(\tilde{p}_{1}, \tilde{p}_{2}) \\
-        \vec{D}_{m}(\tilde{p}_{1}+1, \tilde{p}_{2}) \\
+    \gls{smoothing-vector}(\gls{smoothing-row}, \gls{smoothing-col})
+    = \begin{bmatrix} 
+        \gls{dwell-m}(\gls{smoothing-row},         \gls{smoothing-col}) \\
+        \gls{dwell-m}(\gls{smoothing-row}+1,       \gls{smoothing-col}) \\
         \vdots \\
-        \vec{D}_{m}(\tilde{p}_{1}+q_{1}-1, \tilde{p}_{2}) \\
-        \vec{D}_{m}(\tilde{p}_{1}, \tilde{p}_{2}+1) \\
-        \vec{D}_{m}(\tilde{p}_{1}+1, \tilde{p}_{2}+1) \\
+        \gls{dwell-m}(\gls{smoothing-row}+\gls{smoothing-wnd-rows}-1, \gls{smoothing-col}) \\
+        \gls{dwell-m}(\gls{smoothing-row},         \gls{smoothing-col}+1) \\
+        \gls{dwell-m}(\gls{smoothing-row}+1,       \gls{smoothing-col}+1) \\
         \vdots \\
-        \vec{D}_{m}(\tilde{p}_{1}+q_{1}-1, \tilde{p}_{2}+q_{2}-1)
-    \end{bmatrix}_{q_{1}q_{2} \times 1}
+        \gls{dwell-m}(\gls{smoothing-row}+\gls{smoothing-wnd-rows}-1, \gls{smoothing-col}+\gls{smoothing-wnd-cols}-1)
+    \end{bmatrix}_{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols} \times 1}
 \end{equation}
 
-Having formed the smoothed data matrix $\vec{\tilde{D}}_m$, the data smoothed covariance matrix $C_{\tilde{D}_m}$ 
+Having formed the smoothed data matrix \gls{smoothed-matrix}, the data smoothed covariance matrix \gls{covariance-smoothed-matrix} 
 can then be evaluated as given by equation \ref{eq:covariance-matrix}.
 The matrix $\vec{J}$ in equation \ref{eq:covariance-matrix} is the transition matrix defined by equation \ref{eq:transition-matrix}.
 \cite{2d-music-van-rossum, fbss-techniques}
 
 \begin{equation}
     \label{eq:covariance-matrix}
-    \vec{C}_{\tilde{\vec{D}}_m} =
-        \frac{1}{2 p_{1} p_{2} }
+    \gls{covariance-smoothed-matrix} =
+        \frac{1}{2 \gls{num-smoothing-rows}\gls{num-smoothing-cols} }
         \left[
-            \vec{\tilde{D}}_{m} \vec{\tilde{D}}_{m}^{H}
-            + \vec{J}(\vec{\tilde{D}}_{m} \vec{\tilde{D}}_{m}^{H})^{*}\vec{J} 
+            \gls{smoothed-matrix} \gls{smoothed-matrix}^{\gls{hermitian}}
+            + \vec{J}( \gls{smoothed-matrix} \gls{smoothed-matrix}^{\gls{hermitian}} )^{\gls{conjugate}}\vec{J} 
         \right]
 \end{equation}
 
@@ -452,7 +472,7 @@ The matrix $\vec{J}$ in equation \ref{eq:covariance-matrix} is the transition ma
         \vdots & 0      & 1      & 0      \\
         0      & \iddots & 0      & \vdots \\
         1      & 0      & \ldots & 0      \\
-    \end{bmatrix}_{q_{1}q_{2} \times q_{1}q_{2}}
+    \end{bmatrix}_{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols} \times \gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}}
 \end{equation}
 
 To estimate the signal and noise subspaces, the mean of the covariance matrices of multiple sweeps is used.
@@ -461,26 +481,26 @@ The final covariance matrix used for the eigenvalue decomposition is given by eq
 
 \begin{equation}
     \label{eq:mean-covariance-matrix}
-    \vec{C}_{\tilde{\vec{D}}} = \frac{1}{M} \sum_{m=0}^{M-1} \vec{C}_{\tilde{\vec{D}}_m}
+    \gls{cov-matrix} = \frac{1}{\gls{numchirps}} \sum_{\gls{chirpnumber}=0}^{\gls{numchirps}-1} \gls{covariance-smoothed-matrix}
 \end{equation}
 
-The covariance matrix $\vec{C}_{\tilde{\vec{D}}}$ can be factorized as
+The covariance matrix \gls{cov-matrix} can be factorized as
 
 \begin{equation}
-    \vec{C}_{\tilde{\vec{D}}} = \vec{Q} \vec{\Lambda} \vec{Q}^{H},
+    \gls{cov-matrix} = \gls{eigvecs} \gls{eigvals} \gls{eigvecs}^{\gls{hermitian}},
 \end{equation}
 
-where $\vec{Q}$ contains the eigenvectors of $\vec{C}_{\tilde{\vec{D}}}$ and $\vec{\Lambda}$ is a diagonal matrix containing the corresponding eigenvalues.
-Given the number of targets $L$ (equations \ref{eq:num-targets}--\ref{eq:music-mdl}),
-the noise subspace $\vec{Q}_{n}$ with dimensions  $q_{1}q_{2} \times p_{1}p_{2} - L$
-can be partitioned from $\vec{Q}$ as shown by equation \ref{eq:noise-subspace-partition} \cite{2d-music-van-rossum}.
+where \gls{eigvecs} contains the eigenvectors of \gls{cov-matrix} and \gls{eigvals} is a diagonal matrix containing the corresponding eigenvalues.
+Given the number of targets \gls{numtargets} (equations \ref{eq:num-targets}--\ref{eq:music-mdl}),
+the noise subspace \gls{noisespace} with dimensions $\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols} \times \gls{num-smoothing-rows}\gls{num-smoothing-cols} - \gls{numtargets}$
+can be partitioned from \gls{eigvecs} as shown by equation \ref{eq:noise-subspace-partition}~\cite{2d-music-van-rossum}.
 
 \begin{equation}
     \label{eq:noise-subspace-partition}
-    \vec{Q}_{n} = \begin{bmatrix} \vec{Q}(L) & \ldots & \vec{Q}(p_{1}p_{2} - 1) \end{bmatrix}
+    \gls{noisespace} = \begin{bmatrix} \gls{eigvecs}(\gls{numtargets}) & \ldots & \gls{eigvecs}(\gls{num-smoothing-rows}\gls{num-smoothing-cols} - 1) \end{bmatrix}
 \end{equation}
 
-The number of targets $L$ can be estimated using information theoretic criteria, such as \gls{aic} or \gls{mdl}.
+The number of targets \gls{numtargets} can be estimated using information theoretic criteria, such as \gls{aic} or \gls{mdl}.
 As proposed by Wax and Kailath, equation \ref{eq:music-aic} shows the formula for \gls{aic} for this problem
 and equation \ref{eq:music-mdl} shows the formula for \gls{mdl}.
 For both equations, the number of targets is the argument of the minimum for the criteria (Equation \ref{eq:num-targets}).
@@ -488,40 +508,40 @@ For both equations, the number of targets is the argument of the minimum for the
 
 \begin{equation}
     \label{eq:num-targets}
-    L = \argmin\limits_{0\,\leq\,l\,<\,q_{1}q_{2}}\, \mathrm{AIC}(l) \quad \vee \quad L = \argmin\limits_{0\,\leq\,l\,<\,q_{1}q_{2}}\, \mathrm{MDL}(l)
+    \gls{numtargets} = \argmin\limits_{0\,\leq\,\gls{targetnumber}\,<\,\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}q_{1}q_{2}}\, \mathrm{AIC}(\gls{targetnumber}) \quad \vee \quad \gls{numtargets} = \argmin\limits_{0\,\leq\,\gls{targetnumber}\,<\,\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}}\, \mathrm{MDL}(\gls{targetnumber})
 \end{equation}
 
 \begin{equation}
     \label{eq:music-aic}
-    \mathrm{AIC}(l) = -2 \log \left(
+    \mathrm{AIC}(\gls{targetnumber}) = -2 \log \left(
         \frac
-            {\prod\limits_{i = l}^{q_{1}q_{2}-1} \Lambda(i,i)^{1 \div (q_{1}q_{2} - l)}} 
-            {\frac{1}{q_{1}q_{2}-k} \sum\limits_{i=l}^{q_{1}q_{2}-1} \Lambda(i,i)}
-    \right)^{(q_{1}q_{2}-l)K} + 2l(2q_{1}q_{2}-k)
+            {\prod\limits_{i = \gls{targetnumber}}^{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-1} \Lambda(i,i)^{1 \div (\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols} - \gls{targetnumber})}} 
+            {\frac{1}{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-k} \sum\limits_{i=\gls{targetnumber}}^{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-1} \gls{eigvals}(i,i)}
+    \right)^{(\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-\gls{targetnumber})\gls{numrcv}} + 2\gls{targetnumber}(2\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-\gls{targetnumber})
 \end{equation}
 
 \begin{equation}
     \label{eq:music-mdl}
-    \mathrm{MDL}(l) = - \log \left( 
+    \mathrm{MDL}(\gls{targetnumber}) = - \log \left( 
         \frac
-            {\prod\limits_{i = l}^{q_{1}q_{2}-1} \Lambda(i,i)^{1 \div (q_{1}q_{2} - l)}} 
-            {\frac{1}{q_{1}q_{2}-k} \sum\limits_{i=l}^{q_{1}q_{2}-1} \Lambda(i,i)}
-    \right)^{(q_{1}q_{2}-l)K} + \frac{1}{2}l(2q_{1}q_{2}-l) \log K
+            {\prod\limits_{i = \gls{targetnumber}}^{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-1} \Lambda(i,i)^{1 \div (\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols} - \gls{targetnumber})}} 
+            {\frac{1}{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-\gls{targetnumber}} \sum\limits_{i=\gls{targetnumber}}^{\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-1} \Lambda(i,i)}
+    \right)^{(\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-\gls{targetnumber})\gls{numrcv}} + \frac{1}{2}\gls{targetnumber}(2\gls{smoothing-wnd-rows}\gls{smoothing-wnd-cols}-l) \log \gls{numrcv}
 \end{equation}
 
-Having estimated the noise subspace, the \gls{2d-music} spectrum $\vec{P}(R, \theta)$ is given by equation \ref{eq:2d-music-spectrum}.
-The range-azimuth steering matrix $\vec{V}(\theta, R)$ is given by equation \ref{eq:steering-matrix},
-where $\vec{a}(\theta)$ and $\vec{r}(R)$ are given by 
-equations \ref{eq:matrix-sample-approximation-5} and \ref{eq:matrix-sample-approximation-6} respectively. \cite{music-based-algo}
+Having estimated the noise subspace, the \gls{2d-music} spectrum $\gls{power}(\gls{range}, \gls{angle-az})$ is given by equation \ref{eq:2d-music-spectrum}.
+The range-azimuth steering matrix $\gls{steering}(\gls{angle-az}, \gls{range})$ is given by equation \ref{eq:steering-matrix},
+where $\gls{angle-vector}(\gls{angle-az})$ and $\gls{range-vector}(\gls{range})$ are given by 
+equations \ref{eq:matrix-sample-approximation-5} and \ref{eq:matrix-sample-approximation-6} respectively.~\cite{music-based-algo}
 
 \begin{equation}
     \label{eq:2d-music-spectrum}
-    \vec{P}(R, \theta) = \frac{1}{ \vec{V}(\theta, R)^H \vec{Q}_{n} \vec{Q}_{n}^{H} \vec{V}(\theta, R) }
+    \gls{power}(\gls{range}, \gls{angle-az}) = \frac{1}{ \gls{steering}(\gls{angle-az}, \gls{range})^{\gls{hermitian}} \gls{noisespace} \gls{noisespace}^{\gls{hermitian}} \gls{steering}(\gls{angle-az}, \gls{range}) }
 \end{equation}
 
 \begin{equation}
     \label{eq:steering-matrix}
-    \vec{V}(\theta, R) = \vec{a}(\theta) \vec{r}(R)
+    \gls{steering}(\gls{angle-az}, \gls{range}) = \gls{angle-vector}(\gls{angle-az}) \otimes \gls{range-vector}(\gls{range})
 \end{equation}
 
 An example implementation of the \gls{fbss} algorithm is provided in Appendix \ref{app:fbss-algorithm}
@@ -533,143 +553,142 @@ Figure \ref{fig:2d-music-example} shows an example graph of a \gls{2d-music} spe
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/music_spectrum.pdf}
-        \caption{2-D MUSIC spectrum}
+        \caption{2D-MUSIC spectrum.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/music_corresponding_rgb_image.pdf}
-        \caption{Corresponding RGB video frame}
+        \caption{Corresponding RGB video frame.}
     \end{subfigure}
-    \caption{2D-MUSIC spectrum and a corresponding RGB video frame}
+    \caption{2D-MUSIC spectrum and a corresponding RGB video frame.}
     \label{fig:2d-music-example}
 \end{figure}
 
 \subsection{Range-velocity spectrum}
 \label{sec:doppler-spectrum}
-The change in the range of a target, or a change in the propagation distance of the reflecting signal,
-causes a phase shift in the received reflection.
-This change is proportional to the change in the propagation distance.
+When the range of a target changes by less than half-wavelength,
+or the propagation distance changes by less than one wavelength,
+the phase-shift in the received reflection is linearly proportional to the change in distance.
 Because the time between two samples is known,
 the change in phase between two samples is therefore proportional to the velocity of the target.
-When the velocity of the target $v \ll \frac{cM}{f T_{c}}$,
-the relation between the phase shift and velocity is given by equation \ref{eq:phase-velocity-relation}
-(derived in Appendix \ref{app:deriving-range-velocity-fft}).
+When the velocity of the target $\gls{velocity} \ll \frac{\gls{lightspeed}\gls{numchirps}}{\gls{txfreq} \gls{chirptime}}$,
+the relation between the phase shift (\gls{phase-change}) and velocity (\gls{velocity}) is given by equation \ref{eq:phase-velocity-relation}
+(derived in Appendix \ref{app:deriving-range-velocity-fft}),
+where \gls{chirptime} is the chirp cycle time, \gls{txfreq} is the frequency of the transmitted signal and \gls{lightspeed} is the speed of light.
 
 \begin{equation}
     \label{eq:phase-velocity-relation}
-    \Delta \phi = \frac{4 \pi f v T_{c}}{c}
+    \gls{phase-change} = \frac{4 \pi \gls{txfreq} \gls{velocity} \gls{chirptime}}{\gls{lightspeed}}
 \end{equation}
 
 The equation \ref{eq:phase-velocity-relation} could be used to create a velocity steering vector
 and the \gls{2d-music} algorithm could applied to acquire the range-velocity spectrum.
-The \gls{music} algorithm is computationally very demanding, though,
-and by taking multiple samples of the signal, a sufficient resolution can be had
-for the range and velocity spectra even with the computationally much faster \gls{2d-fft} method.
+The \gls{music} algorithm is computationally very demanding, though.
+By taking multiple samples of the signal, a sufficient resolution can be had
+for the range--velocity spectrum with \gls{2d-fft} method,
+which is computationally much faster.
 
-Given the signal is sampled $N$ times per each of the $M$ chirps on $K$ channels,
-the dimensions of the resulting data cube are $K \times M \times N$ (Section \ref{sec:radar-data}).
+Given the signal is sampled $\gls{numsamples}$ times per each of the $\gls{numchirps}$ chirps on $\gls{numrcv}$ channels,
+the dimensions of the resulting data cube are $\gls{numrcv} \times \gls{numchirps} \times \gls{numsamples}$ (Section \ref{sec:radar-data}).
 For the \gls{2d-fft} method,
-the range and velocity resolutions ($\Delta R$ and $\Delta v$ respectively),
-the maximum range ($R_{\mathrm{max}}$),
+the range and velocity resolutions (\gls{range-resolution} and \gls{velocity-resolution} respectively),
+the maximum range (\gls{maxrange}),
 and the minimum and maximum velocities 
-($v_{\mathrm{min}}$ and $v_{\mathrm{max}}$ respectively) are given by equations
+(\gls{minvelocity}and \gls{maxvelocity} respectively) are given by equations
 \ref{eq:2dfft-range-resolution}--\ref{eq:2dfft-min-max-velocity}
 (derived in Appendix \ref{app:deriving-range-velocity-fft}).
 
 \begin{equation}
     \label{eq:2dfft-range-resolution}
-    \Delta R = \frac{F_{s} c}{2NS}
+    \gls{range-resolution} = \frac{\gls{samplerate} \gls{lightspeed}}{2\gls{numsamples}\gls{slope}}
 \end{equation}
 \begin{equation}
     \label{eq:2dfft-velocity-resolution}
-    \Delta v = \frac{c}{2 M f T_{c}}
+    \gls{velocity-resolution} = \frac{\gls{lightspeed}}{2 \gls{numchirps} \gls{txfreq} \gls{chirptime}}
 \end{equation}
 \begin{equation}
     \label{eq:2dfft-max-range}
-    R_{\mathrm{max}} = \frac{f_{s} c}{2 S}
+    \gls{maxrange} = \frac{\gls{samplerate} \gls{lightspeed}}{2 \gls{slope}}
 \end{equation}
 \begin{equation}
     \label{eq:2dfft-min-max-velocity}
-    \begin{cases}
-    v_{\mathrm{min}} = \frac{c}{4 f T_{c}} \\
-    v_{\mathrm{max}} = - \frac{c}{4 f T_{c}}
-    \end{cases}
+    \gls{minvelocity} = -\gls{maxvelocity} = \frac{\gls{lightspeed}}{4 \gls{txfreq} \gls{chirptime}} \\
 \end{equation}
 
 The range-velocity spectrum is calculated by first averaging the data
-cube corresponding to the $y$:th frame ($\vec{S}_{y}$)
+cube corresponding to the \gls{framenumber}:th frame (\gls{cube-z})
 along the first axis (receivers) to increase the \gls{snr},
-which will result in the data matrix $\vec{D}$, as given by equation \ref{eq:fft-snr-boost}.
-The dimensions of $\vec{D}$ are $M \times N$.
+which will result in the data matrix \gls{mean-chirp-matrix}, as given by equation \ref{eq:fft-snr-boost}.
+The dimensions of \gls{mean-chirp-matrix} are $\gls{numchirps} \times \gls{numsamples}$.
 
 \begin{equation}
     \label{eq:fft-snr-boost}
-    \vec{D}(m, n) = \sum \limits_{k = 0}^{K-1} \vec{S}(k, m, n)
+    \gls{mean-chirp-matrix}(\gls{chirpnumber}, \gls{samplenumber}) = \sum \limits_{\gls{rcvnumber} = 0}^{\gls{numrcv}-1} \gls{cube-z}(\gls{rcvnumber}, \gls{chirpnumber}, \gls{samplenumber})
 \end{equation}
 
-After calculating $\vec{D}$, the Fourier transform is performed on the second axis of the matrix,
-which is the fast-time samples. Denoting $\vec{D} = \begin{bmatrix} \vec{f}(0) & \vec{f}(1) & \ldots & \vec{f}(M-1) \end{bmatrix}$,
-where $\vec{f}(m)$ is the vector containing the fast-time samples for the $m$:th chirp,
+After calculating \gls{mean-chirp-matrix}, the Fourier transform is performed on the second axis of the matrix,
+which is the fast-time samples. Denoting $\gls{mean-chirp-matrix} = \begin{bmatrix} \gls{fast-samples}(0) & \gls{fast-samples}(1) & \ldots & \gls{fast-samples}(\gls{numchirps}-1) \end{bmatrix}$,
+where $\gls{fast-samples}(\gls{chirpnumber})$ is the vector containing the fast-time samples for the $\gls{chirpnumber}$:th chirp,
 the operation is given by equation \ref{eq:fast-time-fft}.
 
 \begin{equation}
     \label{eq:fast-time-fft}
-    \vec{v}(m) = \mathcal{F} \left\{ \vec{f}(m) \right\}
+    \gls{range-spectrum}(\gls{chirpnumber}) = \mathcal{F} \left\{ \gls{fast-samples}(\gls{chirpnumber}) \right\}
 \end{equation}
 
 The operation $\mathcal{F} \{ \cdot \}$ in equation \ref{eq:fast-time-fft} is the discrete Fourier transform.
-The resulting vector $\vec{\hat p}$ has contains the Fourier transform of $f(m)$ as its $m$:th element.
-Each bin in the vectors $\vec{\hat p}$ corresponds to a range as given by equation \ref{eq:fast-time-fft-range}.
-The function $R(n)$ gives the corresponding range for the $n$:th bin in vector $\vec{\hat p}(m)$ (Appendix \ref{app:deriving-range-velocity-fft}).
+The resulting vector $\vec{\hat p}$ has contains the Fourier transform of $\gls{fast-samples}(\gls{chirpnumber})$ as its $\gls{chirpnumber}$:th element.
+Each bin in the vectors \gls{range-spectrum} corresponds to a range as given by equation \ref{eq:fast-time-fft-range}.
+The function $\gls{range}(\gls{samplenumber})$ gives the corresponding range for the \gls{samplenumber}:th bin in vector $\gls{range-spectrum}(\gls{chirpnumber})$ (Appendix \ref{app:deriving-range-velocity-fft}).
 
 \begin{equation}
     \label{eq:fast-time-fft-range}
-    R(n) = n \Delta R = \frac{n F_{s} c}{2NS}
+    \gls{range}(\gls{samplenumber}) = \gls{samplenumber} \gls{range-resolution} = \frac{\gls{samplenumber} \gls{samplerate} \gls{lightspeed}}{2\gls{numsamples}\gls{slope}}
 \end{equation}
 
 Assuming the range of the target changes by less than half a wavelength between two chirps,
-the phase difference between the $n$:th element (frequency component) of vectors $\vec{\hat p}(m)$ and $\vec{\hat p}(m+1)$
+the phase difference between the $\gls{samplenumber}$:th element (frequency component) of vectors $\gls{range-spectrum}(\gls{chirpnumber})$ and $\gls{range-spectrum}(\gls{chirpnumber}+1)$
 is dictated by the distance the target has moved (Appendix \ref{app:deriving-range-velocity-fft}).
-Thus, denoting $\vec{\hat P} = \begin{bmatrix} \vec{\hat p}(0) & \vec{\hat p}(1) \ldots & \vec{\hat p}(m-1) \end{bmatrix}^T$,
-the Fourier transform can be applied along the first dimension of $\vec{\hat P}$ to acquire the velocities of the targets.
+Thus, denoting $\gls{range-spectrum-matrix} = \begin{bmatrix} \gls{range-spectrum}(0) & \gls{range-spectrum}(1) \ldots & \gls{range-spectrum}(\gls{numchirps}-1) \end{bmatrix}^{\gls{transpose}}$,
+the Fourier transform can be applied along the first dimension of \gls{range-spectrum-matrix} to acquire the velocities of the targets.
 The range-velocity power-spectrum can thus be denoted as 
-$\vec{P}^{\prime}$ as given by equation \ref{eq:slow-time-fft-matrix},
-where $\vec{p}^{\prime}(n)$ is given by equation \ref{eq:slow-time-fft}.
+\gls{range-velocity-unshifted} as given by equation \ref{eq:slow-time-fft-matrix},
+where $\gls{velocity-spectrum}(\gls{samplenumber})$ is the velocity spectrum for the \gls{samplenumber}:th range bin, as given by equation \ref{eq:slow-time-fft}.
 
 \begin{equation}
     \label{eq:slow-time-fft-matrix}
-    \vec{P}^{\prime} = \begin{bmatrix} \vec{p}^{\prime}(0) & \vec{p}^{\prime}(1) & \ldots & \vec{p}^{\prime}(n-1)\end{bmatrix}
+    \gls{range-velocity-unshifted} = \begin{bmatrix} \gls{velocity-spectrum}(0) & \gls{velocity-spectrum}(1) & \ldots & \gls{velocity-spectrum}(\gls{numsamples}-1)\end{bmatrix}
 \end{equation}
 
 \begin{equation}
     \label{eq:slow-time-fft}
-    \vec{p}^{\prime}(n) = \mathcal{F} \left \{ \begin{bmatrix} \vec{\hat P}(0, n) & \vec{\hat P}(1, n) & \ldots \vec{\hat P}(m-1, n) \end{bmatrix}^T \right \}
+    \gls{velocity-spectrum}(\gls{samplenumber}) = \mathcal{F} \left \{ \begin{bmatrix} \gls{range-spectrum-matrix}(0, \gls{samplenumber}) & \gls{range-spectrum-matrix}(1, \gls{samplenumber}) & \ldots \gls{range-spectrum-matrix}(\gls{numchirps}-1, \gls{samplenumber}) \end{bmatrix}^T \right \}
 \end{equation}
 
-Because the velocity can be either positive or negative, the matrix $\vec{P}^{\prime}$ still needs to be shifted so
+Because the velocity can be either positive or negative, the matrix $\gls{range-velocity-unshifted}$ still needs to be shifted so
 that the zero-velocity bin is in the center.
-The shifted range-velocity spectrum can be defined as $\vec{P}$ as given by equation \ref{eq:fft-shift}.
+The shifted range-velocity spectrum can be defined as $\gls{power}$ as given by equation \ref{eq:fft-shift}.
 
 \begin{equation}
     \label{eq:fft-shift}
     \begin{cases}
-        \forall m < \frac{M}{2} : \vec{P}(m, n) = \vec{P}^{\prime}(m + \frac{M}{2}, n) \\
-        \forall m \ge \frac{M}{2} : \vec{P}(m, n) = \vec{P}^{\prime}(m - \frac{M}{2}, n) \\
+        \forall \gls{chirpnumber} < \frac{\gls{numchirps}}{2} :   \gls{power}(\gls{chirpnumber}, \gls{samplenumber}) = \gls{range-velocity-unshifted}(\gls{chirpnumber} + \frac{\gls{numchirps}}{2}, \gls{samplenumber}) \\
+        \forall \gls{chirpnumber} \ge \frac{\gls{numchirps}}{2} : \gls{power}(\gls{chirpnumber}, \gls{samplenumber}) = \gls{range-velocity-unshifted}(\gls{chirpnumber} - \frac{\gls{numchirps}}{2}, \gls{samplenumber}) \\
     \end{cases}
 \end{equation}
 
-The velocity corresponding to the $m$:th bin on the first axis of $\vec{P}$ ($v(m)$) can be calculated from the 
+The velocity corresponding to the $\gls{chirpnumber}$:th bin on the first axis of $\gls{power}$ ($\gls{velocity}(\gls{chirpnumber})$) can be calculated from the 
 minimum velocity and velocity resolution (equations \ref{eq:2dfft-min-max-velocity} and \ref{eq:2dfft-max-range}).
-The velocity $v(m)$ is given by equation \ref{eq:slow-time-fft-bin-velocity}.
+The velocity $\gls{velocity}(\gls{chirpnumber})$ is given by equation \ref{eq:slow-time-fft-bin-velocity}.
 
 \begin{equation}
     \label{eq:slow-time-fft-bin-velocity}
-    v(m) = -\frac{c}{4 f T_{c}} + \frac{m c}{2 M f T_{c}}
+    \gls{velocity}(\gls{chirpnumber}) = -\frac{\gls{lightspeed}}{4 \gls{txfreq} \gls{chirptime}} + \frac{\gls{chirpnumber} \gls{lightspeed}}{2 \gls{numchirps} \gls{txfreq} \gls{chirptime}}
 \end{equation}
 
-Therefore, the matrix $\vec{P}$ contains the range-velocity spectrum of the radar cube.
-The power of the reflection in element $\vec{P}(n, m)$ is the absolute value of the element,
+Therefore, the matrix $\gls{power}$ contains the range-velocity spectrum of the radar cube.
+The power of the reflection in element $\gls{power}(\gls{samplenumber}, \gls{chirpnumber})$ is the absolute value of the element,
 whereas the range and velocity are given by equations 
 \ref{eq:fast-time-fft-range} and \ref{eq:slow-time-fft-bin-velocity} respectively.
 Figure \ref{fig:range-velocity-unfiltered} shows an example range-velocity spectrum
@@ -681,14 +700,14 @@ The target is walking away from the sensor, thus the velocity is negative.
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/range-velocity.pdf}
-        \caption{Range-velocity spectrum}
+        \caption{Range-velocity spectrum (2D-FFT).}
         \label{fig:range-velocity-unfiltered}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/range-velocity-rgb.pdf}
-        \caption{Corresponding RGB video frame}
+        \caption{Corresponding RGB video frame.}
         \label{fig:range-velocity-rgb}
     \end{subfigure}
     \caption{
@@ -697,45 +716,45 @@ The target is walking away from the sensor, thus the velocity is negative.
 \end{figure}
 
 It is seen from Figure \ref{fig:range-velocity-unfiltered} that there is a lot of power on the near-zero range and in the zero-velocity bins.
-The near-zero range power is caused by self-interference and oscillator phase-noise in the radar.
+The near-zero range power is caused mainly by self-interference in the radar and reflections of static nearby targets.
 Static clutter appears in the zero-velocity bins.
-The first few range bins should always be attenuated and if only moving targets are of interest,
-also the zero-velocity bins should be attenuated.
+The first few range bins should always be muted and if only moving targets are of interest,
+also the zero-velocity bins should be muted.
 
-Attenuating can be done by defining vectors $\vec{u}$ and $\vec{v}$ of magnitudes $N$ and $M$ respectively,
-where $\vec{u}(n)$ is the amplification of the $n$:th range bin
-and $\vec{v}(m)$ is the amplification of the $m$:th velocity bin.
-Corresponding diagonal matrices $\vec{U}$ and $\vec{V}$ can then be defined with the elements
-of $\vec{u}$ and $\vec{v}$ along their diagonals.
-Given a minimum range of interest $R_{\mathrm{min}}$,
-the vectors $\vec{u}$ and $\vec{v}$ can be defined via equations
+Muting the bins can be done by defining vectors \gls{range-muting-vec} and \gls{velo-muting-vec} of magnitudes $\gls{numsamples}$ and $\gls{numchirps}$ respectively,
+where $\gls{range-muting-vec}(\gls{samplenumber})$ is the amplification of the $\gls{samplenumber}$:th range bin
+and $\gls{velo-muting-vec}(\gls{chirpnumber})$ is the amplification of the $\gls{chirpnumber}$:th velocity bin.
+Corresponding diagonal matrices $\gls{range-muting-matrix}$ and $\gls{velo-muting-matrix}$ can then be defined with the elements
+of $\gls{range-muting-vec}$ and $\gls{velo-muting-vec}$ along their diagonals.
+Given a minimum range of interest $\gls{minrange}$,
+the vectors $\gls{range-muting-vec}$ and $\gls{velo-muting-vec}$ can be defined via equations
 \ref{eq:range-coefficients} and \ref{eq:velocity-coefficients}.
 The only velocity bins that are muted are the ones corresponding to zero-velocity.
 
 \begin{equation}
 \label{eq:range-coefficients}
     \begin{cases}
-        \forall n \leq \left \lfloor \frac{ R_{\mathrm{min}} }{ \Delta R } \right \rfloor :
-            \vec{u}(n) = 0 \\
-        \forall n > \left \lfloor \frac{ R_{\mathrm{min}} }{ \Delta R } \right \rfloor :
-            \vec{u}(n) = 1
+        \forall \gls{samplenumber} \leq \left \lfloor \frac{ \gls{minrange} }{ \gls{range-resolution} } \right \rfloor :
+            \gls{range-muting-vec}(\gls{samplenumber}) = 0 \\
+        \forall \gls{samplenumber} > \left \lfloor \frac{ \gls{minrange} }{ \gls{range-resolution} } \right \rfloor :
+            \gls{range-muting-vec}(\gls{samplenumber}) = 1
     \end{cases}
 \end{equation}
 
 \begin{equation}
 \label{eq:velocity-coefficients}
     \begin{cases}
-        \forall m = \frac{1}{2}M :
-            \vec{v}(m) = 0 \\
-        \forall m \neq \frac{1}{2}M :
-            \vec{v}(m) = 1
+        \forall \gls{chirpnumber} = \frac{1}{2}\gls{numchirps} :
+            \gls{velo-muting-vec}(\gls{chirpnumber}) = 0 \\
+        \forall \gls{chirpnumber} \neq \frac{1}{2}\gls{numchirps} :
+            \gls{velo-muting-vec}(\gls{chirpnumber}) = 1
     \end{cases}
 \end{equation}
 
-Having defined the matrices $\vec{U}$ and $\vec{V}$ according to equations
+Having defined the matrices $\gls{range-muting-matrix}$ and $\gls{velo-muting-matrix}$ according to equations
 \ref{eq:range-coefficients} and \ref{eq:velocity-coefficients},
-the attenuation of the unwanted bins is achieved by multiplying the matrix
-$\vec{P}$ with matrices $\vec{U}$ and $\vec{V}$ as given by equation \ref{eq:2dfft-attenuation}.
+the muting of the unwanted bins is achieved by multiplying the matrix
+$\gls{power}$ with matrices $\gls{range-muting-matrix}$ and $\gls{velo-muting-matrix}$ as given by equation \ref{eq:2dfft-attenuation}.
 The Figure \ref{fig:range-velocity-spectrum-filtered} shows the velocity spectrum 
 from Figure \ref{fig:range-velocity-unfiltered}, but with only the zero-range noise filtered 
 in Figure \ref{fig:range-velocity-range-filtered} and both zero-range noise and zero-velocity clutter
@@ -743,7 +762,7 @@ filtered in Figure \ref{fig:range-velocity-both-filtered}.
 
 \begin{equation}
     \label{eq:2dfft-attenuation}
-    \vec{P}_{\mathrm{filtered}} = \vec{V} ( \vec{U} \vec{P}^T )^T
+    \gls{power-filtered} = \gls{velo-muting-matrix} ( \gls{range-muting-matrix} \gls{power}^{\gls{transpose}} )^{\gls{transpose}}
 \end{equation}
 
 \begin{figure}[H]
@@ -751,17 +770,17 @@ filtered in Figure \ref{fig:range-velocity-both-filtered}.
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/range-velocity-range-filtered.pdf}
-        \caption{Range-velocity spectrum with only zero-range noise filtered}
+        \caption{Range-velocity spectrum with only zero-range noise filtered.}
         \label{fig:range-velocity-range-filtered}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/range-velocity-both-filtered.pdf}
-        \caption{Range-velocity spectrum with zero-range noise and zero-velocity clutter filtered}
+        \caption{Range-velocity spectrum with zero-range noise and zero-velocity clutter filtered.}
         \label{fig:range-velocity-both-filtered}
     \end{subfigure}
-    \caption{Filtered range-velocity spectrum}
+    \caption{Filtered range-velocity spectrum.}
     \label{fig:range-velocity-spectrum-filtered}
 \end{figure}
 
@@ -779,20 +798,20 @@ In other words, the threshold must be picked in such a way that the error rate i
 \begin{figure}
     \centering
     \includegraphics{fig/4/error-matrix.pdf}
-    \caption{Different kinds of detection errors. The signal power in the test cell is denoted as $Y$, whereas $T$ is the detection threshold.}
+    \caption{Different kinds of detection errors. The signal power in the test cell is denoted as $\gls{cell-power}$, whereas $\gls{threshold}$ is the detection threshold.}
     \label{fig:error-matrix}
 \end{figure}
 
-Formally, the target detection is done via hypothesis testing, where $H_0$ is that the cell contains only noise
-and $H_1$ is that the cell contains noise superimposed with a target.
-When the power of the tested cell is denoted as $Y$ and detection threshold as $T$,
+Formally, the target detection is done via hypothesis testing, where \gls{null-hypothesis} is that the cell contains only noise
+and \gls{alt-hypothesis} is that the cell contains noise superimposed with a target.
+When the power of the tested cell is denoted as \gls{cell-power} and detection threshold as $\gls{threshold}$,
 the hypothesis test is defined by equation \ref{eq:hypothesis-test}.
 
 \begin{equation}
     \label{eq:hypothesis-test}
     \begin{cases}
-        H_{0}: Y < T \\
-        H_{1}: Y \ge T
+        \gls{null-hypothesis}: \gls{cell-power} < \gls{threshold} \\
+        \gls{alt-hypothesis}: \gls{cell-power} \ge \gls{threshold}
     \end{cases}
 \end{equation}
 
@@ -801,8 +820,8 @@ If the noise distribution was completely known prior to testing,
 picking a correct detection threshold would be a trivial task.
 In real-world applications the noise spectrum is space-time variant and therefore cannot be known a priori.
 This leaves two choices for picking the detection threshold:
-using distribution-free detection procedures \cite{distribution-free-detection} 
-or estimating the noise spectrum and using an adaptive algorithm \cite{mean-level-detection}.
+using distribution-free detection procedures~\cite{distribution-free-detection} 
+or estimating the noise spectrum and using an adaptive algorithm~\cite{mean-level-detection}.
 
 Typically a category of adaptive algorithms called \gls{cfar} detection algorithms is applied for detecting the targets.
 The principle of \gls{cfar} algorithms is that the noise distribution is estimated from the calculated spectra (e.g. range-velocity or range-azimuth),
@@ -810,24 +829,23 @@ whereof the probability distribution for noise power is estimated.
 The detection threshold is picked from the estimated noise probability distribution
 based on a predefined probability of a false alarm, thus giving a false alarm rate that is constant.
 
-When the probability density function for noise power is denoted as $f_{Y_0}(y)$,
-the probability that $H_0$ is rejected when the power of the test cell $y$
-is in the pure noise space $Y_0$
-is given by the Neyman-Pearson criterion (equation \ref{eq:neyman-pearson}) \cite{fast-two-dimensional-cfar, neyman-pearson}.
+When the probability density function for noise power in cell $y$ is denoted as $f_{\gls{noise-power}}(y)$,
+the probability that \gls{null-hypothesis} is rejected
+is given by the Neyman-Pearson criterion (equation \ref{eq:neyman-pearson})~\cite{fast-two-dimensional-cfar, neyman-pearson}.
 The criterion is illustrated by Figure \ref{fig:neyman-pearson}.
 
 \begin{equation}
     \label{eq:neyman-pearson}
-    P_{\mathrm{fa}} = P(Y_0 \ge T) = \int_{T}^{\infty} f_{Y_0}(y)dy
+    \gls{p-fa} = \gls{probability}(\gls{noise-power} \ge \gls{threshold}) = \int_{\gls{threshold}}^{\infty} f_{\gls{noise-power}}(y)dy
 \end{equation}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.67\textwidth]{fig/4/neyman-pearson.pdf}
     \caption{
-        The probability density functions for the noise space $Y_0$ and signal space $Y_1$.
+        The probability density functions for the noise power $\gls{noise-power}$ and signal power $\gls{sig-power}$.
         The highlighted area is the probability of a false alarm as given by equation \ref{eq:neyman-pearson}
-        for given decision threshold $T$.
+        for given decision threshold $\gls{threshold}$.
     }
     \label{fig:neyman-pearson}
 \end{figure}
@@ -836,51 +854,51 @@ When a square law detector is used for detecting targets in the signal,
 i.e. the power of the signal is used as decision criterion,
 and the noise in each cell is narrowband Gaussian noise,
 the probability distribution for noise follows the exponential distribution.
-Thus, the decision threshold $T$ is given by the quantile function of the exponential distribution (equation \ref{eq:exponential-quantile-func}),
-where $\mu$ is the average noise power. \cite{mean-level-detection}
+Thus, the decision threshold $\gls{threshold}$ is given by the quantile function of the exponential distribution (equation \ref{eq:exponential-quantile-func}),
+where $\gls{mean-pwr}$ is the average noise power.~\cite{mean-level-detection}
 
 \begin{equation}
     \label{eq:exponential-quantile-func}
-    T = -\mu \cdot \ln( 1-P_{\mathrm{fa}} )
+    \gls{threshold} = -\gls{mean-pwr} \cdot \ln( 1-\gls{p-fa} )
 \end{equation}
 
-Different \gls{cfar} algorithms differ from each other in how the mean noise power $\mu$ is estimated.
-The \gls{ca} \gls{cfar} algorithm assumes that the noise power in in each cell independent and identically distributed.
+Different \gls{cfar} algorithms differ from each other in how the mean noise power $\gls{mean-pwr}$ is estimated.
+The \gls{ca} \gls{cfar} algorithm assumes that the noise power in each cell independent and identically distributed.
 Based on the central limit theorem, the average noise power may be estimated by defining a window with sufficiently large dimensions,
 and calculating the average power in the cells inside the window, disregarding the test cell and some guard cells around it.
 This method is based on the assumption that the average noise power is calculated from cells that have a very high likelihood of containing purely noise.
 The assumption is fair when the targets are sparse.
 
-The estimated average noise power $\hat \mu$ around the cell $(y_0, y_1)$
-in the \gls{ca} \gls{cfar} algorithm is given by the equation \ref{eq:ca-cfar-noise-estimate}.
-The term $Z(y_0, y_1)$ and $G(y_0, y_1)$ in the equation are the sum power of the $A \times B$
+The estimated average noise power $\gls{est-mean-pwr}$ around the cell $(\gls{samplenumber}, \gls{chirpnumber})$
+in the \gls{ca}-\gls{cfar} algorithm is given by the equation \ref{eq:ca-cfar-noise-estimate}.
+The term $\gls{cfar-wnd-sum}(\gls{samplenumber}, \gls{chirpnumber})$ and $\gls{guard-wnd-sum}(\gls{samplenumber}, \gls{chirpnumber})$ in the equation are the sum power of the $\gls{cfar-wnd-height} \times \gls{cfar-wnd-width}$
 observation window around the test cell (equation \ref{eq:observation-window-sum})
-and the sum power of the $C \times D$ guard cells around the test cell
+and the sum power of the $\gls{guard-wnd-height} \times \gls{guard-wnd-width}$ guard cells around the test cell
 (equation \ref{eq:guard-window-sum}) respectively.
-The terms $N$ and $M$ are the dimensions of the $N \times M$ matrix that is the power spectrum $\vec{P}$,
-given by the equations \ref{eq:2d-music-spectrum} and \ref{eq:fft-shift}. \cite{fast-two-dimensional-cfar}
+The terms $\gls{numsamples}$ and $\gls{numchirps}$ are the dimensions of the $\gls{numsamples} \times \gls{numchirps}$ matrix that is the power spectrum \gls{power},
+given by the equations \ref{eq:2d-music-spectrum} and \ref{eq:fft-shift}.~\cite{fast-two-dimensional-cfar}
 The test cell and the surrounding windows are illustrated by Figure \ref{fig:ca-cfar-window}.
 
 \begin{align}
     \label{eq:ca-cfar-noise-estimate}
-    & \hat \mu (y_0, y_1) = \frac{1}{AB-CD} \left( Z(y_0, y_1) - G(y_0, y_1) \right)
+    & \gls{est-mean-pwr} (\gls{samplenumber}, \gls{chirpnumber}) = \frac{1}{\gls{cfar-wnd-height}\gls{cfar-wnd-width}-\gls{guard-wnd-height}\gls{guard-wnd-width}} \left( \gls{cfar-wnd-sum}(\gls{samplenumber}, \gls{chirpnumber}) - \gls{guard-wnd-sum}(\gls{samplenumber}, \gls{chirpnumber}) \right)
     \\
     \label{eq:observation-window-sum}
-    & Z(y_0, y_1) = \sum_{a=a_{\mathrm{min}}}^{a_{\mathrm{max}}}\sum_{b=m_{\mathrm{min}}}^{b_{\mathrm{max}}} \vec{P}(a, b) 
+    & \gls{cfar-wnd-sum}(\gls{samplenumber}, \gls{chirpnumber}) = \sum_{\gls{cfar-cell-row}=\gls{cfar-cell-row-min}}^{\gls{cfar-cell-row-max}}\sum_{\gls{cfar-cell-col}=\gls{cfar-cell-col-min}}^{\gls{cfar-cell-col-max}} \gls{power}(\gls{cfar-cell-row}, \gls{cfar-cell-col}) 
     \\
-    & a_{\mathrm{min}} = \max \left( y_{0}- \lfloor A/2 \rfloor , 0 \right) \quad a_{\mathrm{max}} = \min \left( N, y_{0}+ \lfloor A/2 \rfloor \right)
+    & \gls{cfar-cell-row-min} = \max \left( \gls{samplenumber}- \lfloor \gls{cfar-wnd-height}/2 \rfloor , 0 \right) \quad \gls{cfar-cell-row-max} = \min \left( \gls{numsamples}, \gls{samplenumber} + \lfloor \gls{cfar-wnd-height}/2 \rfloor \right)
     \\
-    & b_{\mathrm{min}} = \max \left( y_{1}- \lfloor B/2 \rfloor , 0 \right) \quad b_{\mathrm{max}} = \min \left( M, y_{0}+ \lfloor B/2 \rfloor  \right)
+    & \gls{cfar-cell-col-min} = \max \left( \gls{chirpnumber} - \lfloor \gls{cfar-wnd-width}/2 \rfloor , 0 \right) \quad \gls{cfar-cell-col-max} = \min \left( \gls{numchirps}, \gls{chirpnumber} + \lfloor \gls{cfar-wnd-width}/2 \rfloor  \right)
     \\
     \label{eq:guard-window-sum}
-    & G(y_0, y_1) = \sum_{c=c_{\mathrm{min}}}^{c_{\mathrm{max}}}\sum_{d=d_{\mathrm{min}}}^{d_{\mathrm{max}}} \vec{P}(c, d) 
+    & \gls{guard-wnd-sum}(\gls{samplenumber}) = \sum_{\gls{guard-cell-row}=\gls{guard-cell-row-min}}^{\gls{guard-cell-row-max}}\sum_{\gls{guard-cell-col}=\gls{guard-cell-col-min}}^{\gls{guard-cell-col-max}} \gls{power}(\gls{guard-cell-row}, \gls{guard-cell-col}) 
     \\
-    & c_{\mathrm{min}} = \max \left( y_{0}- \lfloor C/2 \rfloor , 0 \right) \quad c_{\mathrm{max}} = \min \left( N, y_{0}+ \lfloor C/2 \rfloor  \right)
+    & \gls{guard-cell-row-min} = \max \left( \gls{samplenumber}- \lfloor \gls{guard-wnd-height}/2 \rfloor , 0 \right) \quad \gls{guard-cell-row-max} = \min \left( \gls{numsamples}, \gls{samplenumber} + \lfloor \gls{guard-wnd-height}/2 \rfloor  \right)
     \\
-    & d_{\mathrm{min}} = \max \left( y_{1}- \lfloor D/2 \rfloor , 0 \right) \quad d_{\mathrm{max}} = \min \left( M, y_{0}+ \lfloor D/2 \rfloor  \right)
+    & \gls{guard-cell-col-min} = \max \left( \gls{chirpnumber} - \lfloor \gls{guard-wnd-width}/2 \rfloor , 0 \right) \quad \gls{guard-cell-col-max} = \min \left( \gls{numchirps}, \gls{chirpnumber} + \lfloor \gls{guard-wnd-width}/2 \rfloor  \right)
 \end{align}
 
-It is noteworthy that the \gls{2d-music} algorithm (equation \ref{eq:2d-music-spectrum} does not produce a true power spectrum,
+It is noteworthy that the \gls{2d-music} algorithm (equation \ref{eq:2d-music-spectrum}) does not produce a true power spectrum,
 but rather a pseudo-power spectrum where the cells contain a correlation number instead of actual signal power.
 Thus, the noise pseudo-power may not in reality be exponentially distributed and another distribution or a target detection algorithm
 is likely better suited for the task.
@@ -890,19 +908,19 @@ is likely better suited for the task.
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ca-cfar-window-1.pdf}
-        \caption{$(y_0, y_1) = (0, 0)$}
+        \caption{$(\gls{samplenumber}, \gls{chirpnumber}) = (0, 0)$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ca-cfar-window-2.pdf}
-        \caption{$(y_0, y_1) = (N/2, M/2)$}
+        \caption{$(\gls{samplenumber}, \gls{chirpnumber}) = (\gls{numsamples}/2, \gls{numchirps}/2)$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ca-cfar-window-3.pdf}
-        \caption{$(y_0, y_1) = (N-1, M-1)$}
+        \caption{$(\gls{samplenumber}, \gls{chirpnumber}) = (\gls{numsamples}-1, \gls{numchirps}-1)$}
     \end{subfigure}
     \caption{
         The observation window, guard cells and test cell in the Cell Averaging Constant False Alarm Rate algorithm.
@@ -912,50 +930,50 @@ is likely better suited for the task.
     \label{fig:ca-cfar-window}
 \end{figure}
 
-In a multitarget situation, the average noise power estimate of \gls{ca} \gls{cfar} is no longer a good estimate,
+In a multitarget situation, the average noise power estimate of \gls{ca}-\gls{cfar} is no longer a good estimate,
 as it is skewed from targets appearing inside the noise estimating window.
 The average noise level is thus estimated too high and weak targets are "masked" by nearby strong targets,
-which causes type \rom{2} errors ($H_0$ is erroneously accepted).
-The \gls{os} \gls{cfar} algorithm may be deployed in multi-target situations to achieve better detection performance. \cite{nato-radar-topics}
+which causes type \rom{2} errors (\gls{null-hypothesis} is erroneously accepted).
+The \gls{os}-\gls{cfar} algorithm may be deployed in multi-target situations to achieve better detection performance.~\cite{nato-radar-topics}
 
-In the \gls{os} \gls{cfar} algorithm, the powers of the cells inside the observation window are sorted in smallest-first order.
-The $l$:th element is then picked from the sorted array and used as the average noise power estimate.
-Given the observation window has dimensions $A \times B$, based on the work of Rohling, a reasonable value for is $l = \frac{3}{4}AB$.
-In the \gls{os} \gls{cfar} algorithm, the guard cells are omitted.
+In the \gls{os}-\gls{cfar} algorithm, the powers of the cells inside the observation window are sorted in smallest-first order.
+The $\gls{targetnumber}$:th element is then picked from the sorted array and used as the average noise power estimate.
+Given the observation window has dimensions $\gls{cfar-wnd-height} \times \gls{cfar-wnd-width}$, based on the work of Rohling, a reasonable value for is $\gls{targetnumber} = \frac{3}{4}\gls{cfar-wnd-height}\gls{cfar-wnd-width}$.
+In the \gls{os}-\gls{cfar} algorithm, the guard cells are omitted.
 \cite{radar-cfar-thresholding-in-clitter-and-multiple-target-situations}
-The figure \ref{fig:cfar-plots} illustrates the results of applying the \gls{ca} and \gls{os} \gls{cfar} algorithms
+The figure \ref{fig:cfar-plots} illustrates the results of applying the \gls{ca}- and \gls{os}-\gls{cfar} algorithms
 on the range-velocity and range-angle spectra. The range-angle spectrum is calculated via the \gls{2d-music} algorithm whereas the range-velocity
 spectrum is calculated via \gls{2d-fft}.
 It is apparent from figure \ref{fig:os-cfar-music} that the exponentially distributed noise power assumption may not be good for the \gls{2d-music} spectrum.
-The effects of masking in the \gls{ca} \gls{cfar} algorithm can be seen by comparing figures \ref{fig:ca-cfar-fft} and \ref{fig:os-cfar-fft}.
+The effects of masking in the \gls{ca}-\gls{cfar} algorithm can be seen by comparing figures \ref{fig:ca-cfar-fft} and \ref{fig:os-cfar-fft}.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ca-cfar-fft.pdf}
-        \caption{CA CFAR applied on range-velocity spectrum calculated via FFT.}
+        \caption{CA-CFAR applied on range-velocity spectrum calculated via FFT.}
         \label{fig:ca-cfar-fft}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/ca-cfar-music.pdf}
-        \caption{CA CFAR applied on range-angle spectrum calculated via 2D-MUSIC.}
+        \caption{CA-CFAR applied on range-angle spectrum calculated via 2D-MUSIC.}
         \label{fig:ca-cfar-music}
     \end{subfigure}
     \vskip\baselineskip
     \begin{subfigure}{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/os-cfar-fft.pdf}
-        \caption{OS CFAR applied on range-velocity spectrum calculated via FFT.}
+        \caption{OS-CFAR applied on range-velocity spectrum calculated via FFT.}
         \label{fig:os-cfar-fft}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig/4/os-cfar-music.pdf}
-        \caption{OS CFAR applied on range-angle spectrum calculated via 2D-MUSIC:}
+        \caption{OS-CFAR applied on range-angle spectrum calculated via 2D-MUSIC.}
         \label{fig:os-cfar-music}
     \end{subfigure}
     \caption{
@@ -965,10 +983,10 @@ The effects of masking in the \gls{ca} \gls{cfar} algorithm can be seen by compa
     \label{fig:cfar-plots}
 \end{figure}
 
-In addition to the basic \gls{ca} and \gls{os} \gls{cfar} algorithms, multiple variations and combinations of the two have been developed over the years.
-The \gls{ca} and \gls{os} \gls{cfar} still serve as the basis for most of the variations.
+In addition to the basic \gls{ca}- and \gls{os}-\gls{cfar} algorithms, multiple variations and combinations of the two have been developed over the years.
+The \gls{ca}- and \gls{os}-\gls{cfar} still serve as the basis for most of the variations.
 The variations typically consider different computational complexity, noise distribution,
-target amplitude statistics, and multiple target situations. \cite{nato-radar-topics}
+target amplitude statistics, and multiple target situations.~\cite{nato-radar-topics}
 
 After target detection, target tracking algorithms may be used to track the same target between multiple frames.
 With target tracking, the track of a single target may be recorded and predicted
@@ -980,7 +998,7 @@ Target tracking can be split into two parts: track filtering and measurement-to-
 The first part considers predicting the possible target tracks to determine the possible locations for a target in upcoming frames.
 The latter part considers assigning measurements (detected targets) to predicted paths.
 For track filtering, Kalman filtering is a popular choice.
-For measurement-to-track association, nearest-neighbour filtering or probabilistic models are commonly used. \cite{modern-radar-1}
+For measurement-to-track association, nearest-neighbour filtering or probabilistic models are commonly used.~\cite{modern-radar-1}
 
 \section{Depth camera record}   
 \label{sec:depth-file}
@@ -995,45 +1013,45 @@ Table \ref{tab:depth-metadata} documents the metadata fields recorded under the 
         \textbf{Key} & \textbf{Meaning} \\
         \midrule
         framerate & Number of recorded frames per second, decimal number \\
-        resolution & Resolution of the stored frames, string representation of a list: \texttt{'[M, N]'} \\
+        resolution & Resolution of the stored frames, string representation of a list: \texttt{'[\gls{width},\gls{height}]'} \\
         \bottomrule
     \end{tabular}
-    \caption{Metadata fields for the depth camera}
+    \caption{Metadata fields for the depth camera.}
     \label{tab:depth-metadata}
 \end{table}
 
-Given the resolution is $N \times M$ (height $\times$ width) and the recorded data is represented by $\vec{d}$,
-where each element is two bytes long, the index of the $i$:th pixel of the $z$:th frame $\vec{f}_{j}(i)$ can be calculated using equation \ref{eq:depth-pixel}.
+Given the resolution is $\gls{height} \times \gls{width}$ (height $\times$ width) and the recorded data is represented by \gls{data},
+where each element is two bytes long, the index of the $i$:th pixel of the $\gls{framenumber}$:th frame $\gls{frame-z-vector}(i)$ can be calculated using equation \ref{eq:depth-pixel}.
 
 \begin{equation}
     \label{eq:depth-pixel}
-    \forall i \in \left[ 0, NM-1 \right] \land z \in \left[ 0, \frac{| \vec{d} |}{NM}-1 \right] : \vec{f}_{z}(i) = \vec{d}(NMz+i)
+    \forall i \in \left[ 0, \gls{width}\gls{height}-1 \right] \land \gls{framenumber} \in \left[ 0, \frac{| \gls{data} |}{\gls{width}\gls{height}}-1 \right] : \gls{frame-z-vector}(i) = \gls{data}(\gls{width}\gls{height}\gls{framenumber}+i)
 \end{equation}
 
-The frame $\vec{f}_z$ can then be rearranged as a matrix $\vec{F}_z$,
+The frame \gls{frame-z-vector} can then be rearranged as a matrix \gls{frame-z},
 which represents the pixels of the image in such a way that the origin is in the upper left corner.
-The pixel in coordinates $(n,m)$ in the frame $\vec{F}_z$ is given by the equation \ref{eq:pixel-in-frame-depth}.
+The pixel in coordinates $(\gls{pixelrow},\gls{pixelcol})$ in the frame \gls{frame-z} is given by the equation \ref{eq:pixel-in-frame-depth}.
 
 \begin{equation}
     \label{eq:pixel-in-frame-depth}
-    \forall n \in [0, N-1] \land m \in [0, M] : F_{z}(n,m) = \vec{f}_{z}(mN+n)
+    \forall h \in [0, \gls{height}-1] \land w \in [0, \gls{width}-1] : \gls{frame-z}(h,w) = \gls{frame-z-vector}(h\gls{width}+w)
 \end{equation}
 
-Given the \gls{fov} of the sensor is $\Theta \times \Phi$ in the azimuth and altitude dimensions respectively,
-the \gls{fov} of each subpixel is $\frac{\Theta}{N} \times \frac{\Phi}{M}$.
+Given the \gls{fov} of the sensor is $\gls{fovmax-az} \times \gls{fovmax-alt}$ in the azimuth and altitude dimensions respectively,
+the \gls{fov} of each subpixel is $\frac{\gls{fovmax-az}}{\gls{width}} \times \frac{\gls{fovmax-alt}}{\gls{height}}$.
 Given the angle is measured from the upper-left corner of a pixel and origin is in the center pixel,
-the range (in given frame) $R_n$ measured at angle $(\theta, \phi)$ 
+the range (in the $\gls{framenumber}$:th frame) $\gls{range}_{\gls{framenumber}}$ measured at angle $(\gls{angle-alt}, \gls{angle-az})$ 
 is given by equation \ref{eq:depth-range-angle}.
 The term $1 \div 1000$ converts the measured range from millimeters to meters.
 
 \begin{equation}
     \label{eq:depth-range-angle}
-    \forall \theta \in \left[ -\frac{\Theta}{2}, \frac{\Theta}{2} \right] \land \phi \in \left[ -\frac{\Phi}{2}, \frac{\Phi}{2} \right] :
-    R_z(\theta, \phi) =
+    \forall \gls{angle-alt} \in \left[ -\frac{\gls{fovmax-alt}}{2}, \frac{\gls{fovmax-alt}}{2} \right] \land \gls{angle-az} \in \left[ -\frac{\gls{fovmax-az}}{2}, \frac{\gls{fovmax-az}}{2} \right] :
+    R_z(\gls{angle-alt}, \gls{angle-az}) =
     \frac{1}{1000} 
     \vec{F}_z \left(
-        \left\lfloor \frac{N}{2} + \frac{N\theta}{\Theta} \right\rfloor ,
-        \left\lfloor \frac{M}{2} + \frac{M\phi}{\Phi} \right\rfloor
+        \left\lfloor \frac{\gls{height}}{2} + \frac{\gls{height}\gls{angle-alt}}{\gls{fovmax-alt}} \right\rfloor ,
+        \left\lfloor \frac{\gls{width}}{2} + \frac{\gls{width}\gls{angle-az}}{\gls{fovmax-az}} \right\rfloor
     \right)
 \end{equation}
 
@@ -1047,7 +1065,7 @@ The term $1 \div 1000$ converts the measured range from millimeters to meters.
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
         \includegraphics[width=\textwidth]{fig/4/depth-image-skeleton.png}
-        \caption{Joint position information extracted from the depth image (PNG) using OpenPose\cite{openpose}.}
+        \caption{Joint position information extracted from the depth image (PNG) using OpenPose~\cite{openpose}.}
         \label{fig:depth-camera-frame-skeleton}
     \end{subfigure}
     \caption{Depth image extracted from the \texttt{depth.raw} file.}
@@ -1056,9 +1074,9 @@ The term $1 \div 1000$ converts the measured range from millimeters to meters.
 Appendix \ref{app:image-parsing} shows an example of parsing the depth camera frames from the recorded data.
 An example of a resulting image is presented in Figure \ref{fig:depth-camera-frame}.
 Machine learning models may be used to extract e.g. posture information from the depth images.
-Example models include TexMesh\cite{tex-mesh}, A2J\cite{a2j}, and DoubleFusion\cite{double-fusion}.
+Example models include TexMesh~\cite{tex-mesh}, A2J~\cite{a2j}, and DoubleFusion~\cite{double-fusion}.
 Figure \ref{fig:depth-camera-frame-skeleton} shows an example of an image where the joint positions have been estimated using
-OpenPose \cite{openpose} from the depth image that has been exported to PNG format and rendered to the image.
+OpenPose~\cite{openpose} from the depth image that has been exported to PNG format and rendered to the image.
 
 \section{RGB camera record}
 \label{sec:rgb-file}
@@ -1078,32 +1096,32 @@ Table \ref{tab:rgb-metadata} documents the metadata fields recorded for the RGB 
         \textbf{Key} & \textbf{Meaning} \\
         \midrule
         framerate & Number of recorded frames per second, decimal number \\
-        resolution & Resolution of the stored frames, string representation of a list: \texttt{'[M, N]'} \\
+        resolution & Resolution of the stored frames, string representation of a list: \texttt{'[\gls{width},\gls{height}]'} \\
         \bottomrule
     \end{tabular}
-    \caption{Metadata fields for the RBG camera}
+    \caption{Metadata fields for the RBG camera.}
     \label{tab:rgb-metadata}
 \end{table}
 
-Denoting the vector of bytes stored in the file as $\vec{b}$,
-the data may be organized in pixels such that the $i$:th pixel $\vec{p}_{i}$ is given by equation \ref{eq:rgb-pixels}.
-When the pixels have been parsed, given the resolution of the recording is $N \times M$ (height $\times$ width),
-the $z$:th frame, denoted as $\vec{F}_z$ can be parsed based on equation \ref{eq:rgb-pixels-to-frames}.
+Denoting the vector of bytes stored in the file as \gls{bytes},
+the data may be organized in pixels such that the $i$:th pixel $\gls{pixels}(i)$ is given by equation \ref{eq:rgb-pixels}.
+When the pixels have been parsed, given the resolution of the recording is $\gls{height} \times \gls{width}$ (height $\times$ width),
+the \gls{framenumber}:th frame, denoted as \gls{frame-z} can be parsed based on equation \ref{eq:rgb-pixels-to-frames}.
 
 \begin{align}
     \label{eq:rgb-pixels}
-    \forall i \in \left[ 0, \frac{ | \vec{b} | }{3} \right] : \vec{p}_{i} = \begin{bmatrix} \vec{b}(3i) & \vec{b}(3i+1) & \vec{b}(3i+2) \end{bmatrix}^T
+    &\forall i \in \left[ 0, \frac{ | \gls{bytes} | }{3} \right] : \gls{pixels}(i) = \begin{bmatrix} \gls{bytes}(3i) & \gls{bytes}(3i+1) & \gls{bytes}(3i+2) \end{bmatrix}^{\gls{transpose}}
     \\
     \label{eq:rgb-pixels-to-frames}
-    \forall z \in \left[ 0, \frac{|p|}{NM} \right] : \vec{F}_{z}(n, m) = \vec{p}(zNM + nM + m)
+    &\forall \gls{framenumber} \in \left[ 0, \frac{|\gls{pixels}|}{\gls{height}\gls{width}} \right] : \gls{frame-z}(\gls{pixelrow}, \gls{pixelcol}) = \gls{pixels}(\gls{framenumber}\gls{height}\gls{width} + \gls{pixelrow}\gls{width} + \gls{pixelcol})
 \end{align}
 
 Appendix \ref{app:image-parsing} shows an example of parsing the RGB camera frames from the recorded data.
 An example of a resulting image is presented in Figure \ref{fig:rgb-camera-frame}.
 Machine learning models may be used to e.g. extract posture information or detect items from the RGB images.
-Example models include ....
+Some example models are OpenPose~\cite{openpose}, VNect~\cite{vnect}, and MixSTE~\cite{mixste}.
 Figure \ref{fig:rgb-camera-frame-skeleton} shows an example of an image
-where the joint positions have been estimated using OpenPose \cite{openpose}.
+where the joint positions have been estimated using OpenPose~\cite{openpose}.
 
 \begin{figure}[H]
     \centering
@@ -1145,12 +1163,12 @@ Figure \ref{fig:mic-channels} shows the positions of the microphones in the used
 The microphone numbers correspond to the audio channel numbers such that MIC1 is channel 0, MIC2 is channel 1, etc.
 Each sample in the data is represented by a 32-bit floating-point number.
 The samples are real-valued.
-Appendix \ref{app:mic-parsing} shows an example of reading the audio file with Python using the Soundfile \cite{python-soundfile} library.
+Appendix \ref{app:mic-parsing} shows an example of reading the audio file with Python using the Soundfile~\cite{python-soundfile} library.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.67\textwidth]{fig/4/microphone-channels.png}
-    \caption{Channels of the MiniDSP UMA-16 microphone \cite{minidsp-spec}.}
+    \includegraphics[width=0.67\textwidth]{fig/4/microphone-channels.eps}
+    \caption{Channels of the MiniDSP UMA-16 microphone~\cite{minidsp-spec}.}
     \label{fig:mic-channels}
 \end{figure}
 

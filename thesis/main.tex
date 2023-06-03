@@ -26,7 +26,7 @@
 %   programs - if you wish to display code snippets
 % Example: \documentclass[english, authoryear]{tauthesis}
 %          thesis in English with author-year citations
-\documentclass[english, numeric, fleqn, draft]{tauthesis}
+\documentclass[english, numeric, fleqn]{tauthesis}
 
 % The glossaries package throws a warning:https://www.overleaf.com/project/62e7923e3f59d530f15d76e9
 % No language module detected for 'finnish'.
@@ -46,19 +46,20 @@
 %\usepackage{bm}
 
 % Text hyperlinking
-\usepackage{hyperref}
+%\usepackage{hyperref}
 %\hypersetup{hidelinks}
 
 % (SI) unit handling
 \usepackage{siunitx}
 \sisetup{
     detect-all,
-    math-sf=\mathrm,
     exponent-product=\cdot,
 %    output-decimal-marker={,} % for theses in FINNISH!
 }
 
 %%%%% Your commands.
+
+\usepackage{microtype}
 
 % Basic theorems in Finnish and in English.
 % Remove [chapter] if you wish a simply
@@ -113,16 +114,23 @@
 }
 
 \usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+
 \usepackage{subcaption}
 \usepackage{dirtree}
 \usepackage[final]{listings}
 \lstset{
   basicstyle=\small,
-  mathescape
+  mathescape,
+  captionpos=b,
+  commentstyle=\tt
 }
 \usepackage{array}
 \usepackage{makecell}
 \usepackage{mathdots}
+\usepackage[euler]{textgreek}
+\usepackage{xurl}
 
 \renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
 \renewcommand{\phi}{\varphi}
@@ -135,8 +143,11 @@
 \makeatother
 
 %%%%% Glossary information.
+\newglossary*{symbols}{Symbols}
+\loadglsentries[symbols]{src/symbols.tex}
+\newglossary*{abbreviations}{Abbreviations}
+\loadglsentries[abbreviations]{src/glossary.tex}
 
-\loadglsentries[main]{src/glossary.tex}
 \makeglossaries
 
 \addbibresource{references.bib}
@@ -216,7 +227,8 @@
 % \lstlistoflistings
 
 % Print the glossary of terms.
-\glossary
+\printglossary[type=abbreviations]
+\printglossary[type=symbols]
 
 %%%%% MAIN MATTER %%%%%
 
@@ -253,7 +265,7 @@
 
 \begin{appendices}
 
-\chapter{Radar configuration file used during testing and development of the system}
+\chapter{Radar configuration file used in development of the system}
 \label{app:config}
 \input{./src/appendices/config.tex}
 
@@ -273,11 +285,11 @@
 \label{app:fbss-algorithm}
 \input{./src/appendices/fbss-python-example.tex}
 
-\chapter{Applying 2-D MUSIC algorithm to a radar data cube to estimate the range-azimuth power spectrum}
+\chapter{2D-MUSIC algorithm for estimating the range-azimuth power spectrum}
 \label{app:2d-music-algorithm}
 \input{./src/appendices/2d-music-python-example.tex}
 
-\chapter{Computing the range-velocity spectrum from the radar data cube}
+\chapter{2D-FFT algorithm for estimating the range-velocity spectrum}
 \label{app:2dfft-range-velocity-example}
 \input{./src/appendices/2d-fft-python-example.tex}
 
@@ -289,10 +301,12 @@
 \label{app:image-parsing}
 \input{./src/appendices/camera-frame-parsing.tex}
 
-\chaptrer{Parsing the audio file with Python Soundfile}
+\chapter{Parsing the audio file with Python Soundfile}
 \label{app:mic-parsing}
 \input{./src/appendices/mic-parsing.tex}
 
 \end{appendices}
+
+\glsaddallunused[symbols]
 
 \end{document}

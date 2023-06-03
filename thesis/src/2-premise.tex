@@ -1,4 +1,4 @@
-The model developed by White \cite{white87} and later refined for \gls{har} by Fu et al. \cite{sensing-survey} 
+The model developed by White~\cite{white87} and later refined for \gls{har} by Fu et al.~\cite{sensing-survey} 
 can be used to categorize sensors and data modalities recorded by them.
 To produce a versatile data set, 
 multiple data modalities should be included.
@@ -6,12 +6,12 @@ This requires the inclusion of multiple devices in the array.
 The categorization model is presented in Figure \ref{fig:sensor-categories}.
 
 The sensors used for the system, with the recorded modalities and highlight colour in parentheses,
-were as follows:
+were the following:
 \begin{itemize}
-    \item Texas Instruments IWR6843ISK + DCA1000EVM (radar, cyan)
-    \item Panasonic Grid-EYE (infrared, yellow)
-    \item Intel RealSense D435i (RGB-D video, red)
-    \item MiniDSP UMA-16 (acoustic, green)
+    \item Texas Instruments IWR6843ISK + DCA1000EVM (radar, cyan),
+    \item Panasonic Grid-EYE (infrared, yellow),
+    \item Intel RealSense D435i (RGB-D video, red), and
+    \item MiniDSP UMA-16 (acoustic, green).
 \end{itemize}
 
 The modalities recorded by the sensors are highlighted in different colours in Figure \ref{fig:sensor-categories}.
@@ -23,15 +23,15 @@ ambient temperature sensing provides very minimal information about human activi
 and magnetic sensing requires a large number of sensors compared to the useful information gained from them.
 The excluded acoustic sensors could provide useful information with very little installation cost.
 WiFi based electromagnetic sensing could also potentially bring more value to the system,
-but radar can detect movements with a much finer resolution and the radar devices are perhaps easier to interface with. \cite{sensing-survey}
+but radar can detect movements with a much finer resolution and the radar devices are perhaps easier to interface with.~\cite{sensing-survey}
 All in all, most of the interesting data modalities are recorded by the sensors in the system,
 with some room for improvement.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{fig/2/sensor-categories.png}
+    \includegraphics[width=0.7\textwidth]{fig/2/sensor-categories.eps}
     \caption{
-        Sensor categorization model by Fu et al. \cite{sensing-survey}.
+        Sensor categorization model by Fu et al.~\cite{sensing-survey}.
         Data modalities present in the data collection system of this thesis are highlighted in different colours.
     }
     \label{fig:sensor-categories}
@@ -84,14 +84,15 @@ The antennas are illustrated in figure \ref{fig:antennas}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{fig/3/antennas.pdf}
-    \caption{Antenna arrays illustrated. More detailed documentation is available in the device user guide \cite{ti-iwr-user-guide}.}
+    \caption{Antenna arrays illustrated. More detailed documentation is available in the device user guide~\cite{ti-iwr-user-guide}.}
     \label{fig:antennas}
 \end{figure}
 
-By using all of the antennas,
-the location of the target can be detected in all three dimensions.
-The antennas can be toggled on and off via a special configuration file.
-The same configuration file can be used to define nearly arbitrary signal formats. \cite{mmwave-sdk-user-guide}
+When multiple active receivers are used,
+the location of the target can be detected in all three dimensions by applying angle and distance estimation algorithms,
+such as the \gls{2d-music} and \gls{2d-fft} algorithms (Sections \ref{sec:range-angle}--\ref{sec:cfar}).
+The receivers can be toggled on and off from a special configuration file.
+The same configuration file can be used to define nearly arbitrary signal formats~\cite{mmwave-sdk-user-guide}.
 
 The IRW6843ISK is capable of processing the radar samples into radar frames on-board,
 but but depending on the operating parameters,
@@ -100,38 +101,45 @@ To get more performance out of the device,
 the DCA1000EVM is used to interface with the IWR6843ISK to record the raw samples without processing them on-board.
 The processing is instead done separately by external software to form the radar frames.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fig/2/radar-frame-bytes.pdf}
+    \caption{The structure of the data frames output by the DCA1000EVM.}
+    \label{fig:radar-frame-bytes}
+\end{figure}
+
 The DCA1000EVM outputs the radar samples in a rather complicated format,
 that is documented in detail in the user guide for the device.
 The frames output by the device depend on its configured operating mode.
 In this system, the device is configured in such a way that the frames consist of a 4-byte sequence number,
-6-byte length field and a 48--1462-byte payload. \cite{dca1000-user-guide}.
+6-byte length field and a 48--1462-byte payload (Figure \ref{fig:radar-frame-bytes})~\cite{dca1000-user-guide}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{fig/2/2-radar-sampling.pdf}
     \caption{Illustration of samples, chirps, and frames. With 2 receiving antennas,
-    the equation \ref{eq:bytes-per-frame} would give $N = 4\cdot6\cdot4\cdot2 = 192$ bytes per frame.
+    the equation \ref{eq:bytes-per-frame} would give $N_{\mathrm{total}} = 4\cdot6\cdot4\cdot2 = 192$ bytes per frame.
     In a practical situation, the numbers would, of course, be much higher.}
     \label{fig:2-radar-signal-sampling}
 \end{figure}
 
 The data field of the frames consist of 2-byte complex samples,
-that can be arranged to 4-byte I/Q samples \cite{dca1000-raw-data-capture},
+that can be arranged to 4-byte I/Q samples~\cite{dca1000-raw-data-capture},
 i.e. four bytes of data are output for each sample.
-The number of samples in a single radar frame can therefore be calculated as give nby equation \ref{eq:bytes-per-frame}.
+The number of samples in a single radar frame \gls{total-samples} can be calculated as given by equation \ref{eq:bytes-per-frame},
+\gls{numsamples} is the number of samples per chirp,
+\gls{numchirps} is the number of chirps per frame,
+and \gls{numrcv} is the number of active receiving antennas.
+Figure \ref{fig:2-radar-signal-sampling} illustrates the formula.
+The number of bytes per radar frame is $4 \gls{total-samples}$.
 
 \begin{equation}
 \label{eq:bytes-per-frame}
-    N = 4 \cdot S \cdot C \cdot K,
+    \gls{total-samples} = 4 \gls{numsamples} \gls{numchirps}  \gls{numrcv},
 \end{equation}
 
-where $N$ is the number of samples per frame,
-$S$ is the number of samples per chirp,
-$C$ is the number of chirps per frame,
-and $K$ is the number of active receivers.
-Figure \ref{fig:2-radar-signal-sampling} illustrates the formula.
 
-As the frames output by the DCA1000EVM do not correspond exactly to the $N$-byte radar frames,
+As the frames output by the DCA1000EVM do not correspond exactly to the \gls{total-samples}-byte radar frames,
 the data segments should simply be concatenated in the order indicated by the sequence number until a full frame can be stored or processed.
 The developed data collection software saves the data segments on disk as-is,
 and the exact format of the data segments is presented in more detail in Section \ref{sec:radar-file}.
@@ -143,18 +151,16 @@ It is also capable of sensing through most (non-conductive) walls,
 making it less prone to occlusion.
 Using \gls{mmWave} frequencies, radar is capable of detecting movements even in the sub-millimeter range.
 
-After processing, multiple various information can can be extracted from the data:
+After processing, various information can can be extracted from the data:
 \begin{itemize}
-    \item range
-    \item azimuth and altitude angle
-    \item Doppler-spectrum (velocity as a function of range)
-    \item radar cross-section
+    \item target range, azimuth and altitude angle (Section \ref{sec:range-angle}),
+    \item range-velocity spectrum (Section \ref{sec:doppler-spectrum}), and
+    \item radar cross-section.
 \end{itemize}
 From \gls{har} perspective, the first three items of the list are the most interesting,
-especially the doppler-spectrum (time-frequency spectrogram) \cite{sensing-survey}.
+especially the doppler-spectrum (time-frequency spectrogram)~\cite{sensing-survey}.
 
-The radar can effectively detect various activities based on the Doppler-spectrum
-\cite{bumblebee-micro-doppler-har, seifert19, liu12, kim16}.
+The radar can effectively detect various activities based on the Doppler-spectrum~\cite{bumblebee-micro-doppler-har, seifert19, liu12, kim16}.
 Additionally it can very effectively measure the location of a target,
 which can be used as additional information for other sensors.
 As a downside, radar devices are very expensive and power-consuming.
@@ -169,14 +175,14 @@ while the Panasonic Grid-EYE records the \gls{ir} spectrum.
 
 Visible spectrum video is one of the best studied areas in computer vision and \gls{har}.
 The primary approach to \gls{har} from RGB video is using convolutional neural networks.
-Models such as AlexNet \cite{alexnet}, and C3D have proven to be effective,
-the latter reaching as high as 90 \% accuracy in detecting human actions \cite{c3d}. 
+Models such as AlexNet~\cite{alexnet}, and C3D have proven to be effective,
+the latter reaching as high as 90 \% accuracy in detecting human actions~\cite{c3d}. 
 
 Using a stereo camera, depth information can be extracted.
 This allows for much simpler segmentation and pose estimation
-compared to RGB video. \cite{sensing-survey}
+compared to RGB video.~\cite{sensing-survey}
 Combining the RGB and depth channels,
-detection accuracies as high as 98 \% have been recorded on some data sets \cite{cippitelli16}.
+detection accuracies as high as 98 \% have been recorded on some data sets~\cite{cippitelli16}.
 
 RGB video based segmentation and \gls{har} in general can be problematic in some scenarios.
 If the image has poor contrast, proper segmentation may not be possible.
@@ -185,10 +191,10 @@ this may be caused by bad lightning conditions, i.e. under- or overexposure or e
 Visible spectrum imaging also raises some privacy concerns in certain environments.
 
 Thermal cameras are capable of detecting the heat radiation emitted from warm objects.
-This makes them capable of detecting human motion from the background regardless of the lightning conditions \cite{han05}.
+This makes them capable of detecting human motion from the background regardless of the lightning conditions~\cite{han05}.
 Additionally, very low resolution (from 8x8 px to 16x16 px) \gls{ir} sensors
-have been demonstrated to be capable of detecting human actions \cite{10.1145/2632048.2636084}.
-With a frame rate of 10 fps, detection accuracy of 85 \% and above has been reached depending on the action \cite{sensing-survey, tao18}.
+have been demonstrated to be capable of detecting human actions~\cite{10.1145/2632048.2636084}.
+With a frame rate of 10 fps, detection accuracy of 85 \% and above has been reached depending on the action~\cite{sensing-survey, tao18}.
 Although the detection accuracy is not as good as with the RGB-D camera,
 the possibility of operating in any lightning conditions and with high respect to privacy
 make the \gls{ir} camera a viable choice.
@@ -202,15 +208,14 @@ The depth camera has a 87-degree horizontal \gls{fov} and a 58-degree vertical \
 It can record up to 90 frames per second with up to 1280x720 pixel resolution.
 The ideal operating range is 0.3--3.0 meters and the depth measurement error is <2\% at 2 meters.
 The RGB camera has a 69-degree horizontal \gls{fov} and a 42-degree vertical \gls{fov}.
-It can record at up to 1920x1080 resolution and up to 30 frames per second. \cite{realsense-datasheet}
+It can record at up to 1920x1080 resolution and up to 30 frames per second.~\cite{realsense-datasheet}
 
 Intel provides a library that can be used to interface with the camera programmatically.
 The library can be used natively from C++,
 and wrappers are provided for multiple languages and toolkits,
-perhaps most importantly Python, Matlab, and ROS (1 and 2).
-\cite{librealsense2}
+perhaps most importantly Python, Matlab, and ROS (1 and 2).~\cite{librealsense2}
 The Python wrapper was used in the data collection software.
-It provides methods for getting the RGB-values, depth-values and time stamps of each frame \cite{librealsense2-python-docs}.
+It provides methods for getting the RGB-values, depth-values and time stamps of each frame~\cite{librealsense2-python-docs}.
  
 \subsection{Infrared}
 The \gls{ir} camera used in the assembly is the Panasonic GRID-EYE (part no. AMG8834).
@@ -221,7 +226,7 @@ It can operate in temperatures of 0--\SI{80}{\celsius},
 and measure temperature with a resolution of \SI{0.5}{\celsius},
 while the absolute temperature accuracy is 2.5--\SI{3.0}{\celsius}.
 According to the manufacturer,
-it can produce data at the rate of either 1 or 10 frames per second. \cite{grid-eye-manual}
+it can produce data at the rate of either 1 or 10 frames per second.~\cite{grid-eye-manual}
 While developing the data collection software,
 it was measured that the actual frame rate was approximately 8.62 frames per second, though.
 
@@ -230,7 +235,7 @@ where the first 3 bytes are header bytes, followed by 130 bytes of data, and 2 b
 The first two bytes of the data represent the temperature 
 of the internal thermistor of the device (ambient temperature)
 and the following 128 bytes represent the \gls{ir} camera matrix packed in row-major order.
-Temperatures are represented as multiples of four with little-endian two-byte integers. \cite{grid-eye-protocol}
+Temperatures are represented as multiples of four with little-endian two-byte integers.~\cite{grid-eye-protocol}
 The real temperature is therefore the unpacked number divided by four.
 
 \section{Audio}
@@ -244,8 +249,8 @@ The microphone uses 24-bit quantization.
 The microphone connects to the computer via USB,
 and can be interfaced with like any other microphone.
 Multiple convenience libraries exist for interfacing with microphones via code.
-Examples include SoundDevice (Python)\cite{sounddevice-docs},
-Simple DirectMedia Layer 2.0 (C, C\texttt{++}, C\#, Python)\cite{SDL2}, PortAudio (C, C\texttt{++})\cite{portaudio}.
+Examples include SoundDevice (Python)~\cite{sounddevice-docs},
+Simple DirectMedia Layer 2.0 (C, C\texttt{++}, C\#, Python)~\cite{SDL2}, and PortAudio (C, C\texttt{++})~\cite{portaudio}.
 
 \section{Data recording software requirements}
 \label{sec:2-requirements}
@@ -272,15 +277,15 @@ The data shall:
 Time synchronization, in the case of the data set,
 means that the beginning of the data in each recorded modality
 corresponds to the same point in time.
-In other words, given a common starting time $T_{s}$,
-the first data point should correspond to $T_{s}$ in each recorded modality.
-In addition, the recorded data for any modality shall not end before a common ending time $T_{e}$.
-Given a known sampling rate $N_{s}$,
-satisfying this requirement allows easily mapping any moment in time ($t$) to a sample number ($n$) (equation \ref{eq:time-to-sample}).
+In other words, given a common starting time \gls{start-time},
+the first data point should correspond to \gls{start-time} in each recorded modality.
+In addition, the recorded data for any modality shall not end before a common ending time \gls{end-time}.
+Given a known frame rate \gls{framerate},
+satisfying this requirement allows easily mapping any moment in time (\gls{time}) to a frame number (\gls{framenumber}) (equation \ref{eq:time-to-sample}).
 
 \begin{equation}
     \label{eq:time-to-sample}
-    n = \mathrm{round}(N_{s} t)
+    \gls{framenumber} = \lfloor \gls{framerate} \gls{time} \rfloor
 \end{equation}
 
 For the data to be useful in supervised learning,
