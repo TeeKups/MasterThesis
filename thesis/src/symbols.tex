@@ -1234,15 +1234,39 @@
     }
 }
 
-\newglossaryentry{fast-samples}{
+\newglossaryentry{range-spectrum-m}{
     name={\ensuremath{
-        \vec{f}
+        \vec{\hat{p}}_{m}
     }},
     description={
-        The samples of a single chirp
+        Range spectrum vector of the \ensuremath{m}:th chirp in the radar cube
     },
     sort={
-        f
+        pp m
+    }
+}
+
+\newglossaryentry{fast-samples-mean}{
+    name={\ensuremath{
+        \vec{\bar{c}}
+    }},
+    description={
+        The fast-time samples of a chirp averaged between receivers
+    },
+    sort={
+        cc
+    }
+}
+
+\newglossaryentry{fast-samples-mean-m}{
+    name={\ensuremath{
+        \vec{\bar{c}}_{m}
+    }},
+    description={
+        The fast-time samples of the \ensuremath{m}:th chirp averaged between receivers
+    },
+    sort={
+        cc m
     }
 }
 
@@ -1279,6 +1303,18 @@
     },
     sort={
         ppp
+    }
+}
+
+\newglossaryentry{velocity-spectrum-n}{
+    name={\ensuremath{
+        \vec{p^{\prime}}_{n}
+    }},
+    description={
+        The velocity spectrum vector for the \ensuremath{n}:th fast-time sample across multiple chirps
+    },
+    sort={
+        ppp n
     }
 }
 

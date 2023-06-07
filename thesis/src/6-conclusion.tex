@@ -1,4 +1,4 @@
-As the product of this thesis,
+In this thesis,
 a multimodal sensor data recording system was produced.
 The implementation of the system was discussed,
 the produced data formats were documented and data processing examples were given to prove the documentation is truthful.
@@ -6,15 +6,17 @@ Additionally, the quality of the system was assessed.
 
 The system is capable of recording five different modalities of data:
 $4 \times 4$ acoustic, RGB video, depth video, $8 \times 8$ infrared video, and mmWave radar signal.
-The system is very portable as the sensors can be mounted on a single bracket that attaches to a camera tri-pod.
-Only a sufficient power source and a computer equipped with an \gls{ssd} drive are required.
-Wearable sensors were omitted from the system due to being cumbersome.
-Proximity sensors, such as magnetic switches, pressure plates, electrostatic sensors, etc. labour-intensive sensors were also omitted.
+The system is very portable as the sensors can be mounted on a single bracket that is attached to a camera stand.
+Only a sufficient power source and a computer equipped with an \gls{ssd} are required.
+Wearable sensors were omitted from the system as the focus was in remote sensing.
+Proximity sensors, such as magnetic switches, pressure plates, electrostatic sensors, etc. were also omitted
+due to their labour-intensive installation.
 
-The system was designed to be parallel to maximize the data throughput.
+The software of the system was implemented with a parallel design to maximize the data throughput and to minimize latency.
 Each sensor has its own recorder subprocess that is controlled by a single main process.
+Additionally, there is a single subprogram that is responsible for writing the data produced by the sensor modules onto a disk.
 The subprograms are implemented as modules.
-The system can be extended to include additional sensors by writing a recording module for the sensor,
+The system can be extended to include additional sensors by writing a recording module for the sensor
 and starting it from the main process.
 
 The recorded data from the different sensors is synchronized in time.
@@ -30,19 +32,20 @@ Based on the output formats documented in Chapter \ref{ch:4-files-and-post},
 the data may be parsed into other formats, such as the popular \texttt{.mat} format used by MATLAB.
 Additionally, post-processing may be performed on the data to make it more suitable for machine learning.
 Most importantly, the range-angle and range-velocity spectra of the radar may be calculated
-using the algorithms presented in Sections \ref{sec:range-angle} and \ref{sec:doppler-spectrum}.
+using the algorithms presented in Sections \ref{sec:range-angle} and \ref{sec:doppler-spectrum},
+and pose estimation models could be applied to the RGB and Depth video.
 
 While the system fulfilled the requirements set for in in Chapter \ref{ch:2-premise},
-some instability was detected when using it,
-which makes the system unusable for carrying out a large-scale data recording campaign.
+some instability was recognized while using it,
+which makes the system unsuitable for carrying out a large-scale data recording campaign.
 For small-scale campaigns, the system is satisfactory.
 
-Sometimes, after starting, the system freezes.
-It is unclear whether this is caused by problems in the parallel design,
-or whether it is caused by the radar sensor.
+Sometimes, after starting, the system froze.
+It remained unclear whether this was caused by problems in the parallel program,
+or if it was caused by the radar sensor.
 Power-cycling the radar sensor and restarting the program fixed the issue with a high likelihood, though,
 which suggests that the problem may be caused by the radar.
-It should be looked into, if there is some further configuration that can be done to the radar device to increase its stability.
+It should be investigated if there is some further configuration that can be done to the radar device to increase its stability.
 
 Additionally, the range-angle spectrum was extremely noisy in some frames.
 This issue was discussed in Section \ref{sec:5-radar-spectrum-issues}.
@@ -51,15 +54,14 @@ It should also be investigated if the issue can be alleviated by using the two-t
 of receivers from 4 to 8.
 It is also possible that the used radar processing algorithms could be improved to produce a better range-angle estimate.
 
-All in all, the implemented system serves a good basis.
-Some further development must still be done,
-but the system serves as a very good Proof of Concept.
-When the stability issues have been fixed,
+All in all, the implemented system serves a good basis for future research,
+but some further development must still be done,
+When the stability issues are fixed,
 carrying out a larger-scale data collection campaign with the system should be feasible.
 
 Even with small data sets, some preliminary research may be done with the system, especially considering transfer learning.
 Machine learning models trained with other data sets can be evaluated on data sets recorded on this system to see how the performance carries over.
-In addition, once the stability issues are fixed in the system,
+In addition, once the stability issues are fixed in the system and a larger-scale data collection campaign has been carried out,
 the data can even be used for training machine learning models.
 With the portable system, high quality data sets should be possible to collect,
 which will enable high-performance human activity recognition using remote sensing in various environments.

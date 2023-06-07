@@ -1,12 +1,12 @@
 The model developed by White~\cite{white87} and later refined for \gls{har} by Fu et al.~\cite{sensing-survey} 
-can be used to categorize sensors and data modalities recorded by them.
+can be used to categorize sensors and the recorded data modalities.
 To produce a versatile data set, 
 multiple data modalities should be included.
 This requires the inclusion of multiple devices in the array.
 The categorization model is presented in Figure \ref{fig:sensor-categories}.
 
-The sensors used for the system, with the recorded modalities and highlight colour in parentheses,
-were the following:
+In Figure \ref{fig:sensor-categories}, the data modalities recorded by the system are highlighted with different colours.
+With the corresponding modalities and highlight color in parentheses, the sensors included in the system were:
 \begin{itemize}
     \item Texas Instruments IWR6843ISK + DCA1000EVM (radar, cyan),
     \item Panasonic Grid-EYE (infrared, yellow),
@@ -14,15 +14,15 @@ were the following:
     \item MiniDSP UMA-16 (acoustic, green).
 \end{itemize}
 
-The modalities recorded by the sensors are highlighted in different colours in Figure \ref{fig:sensor-categories}.
-From the figure, it can be observed that three out of five sensor categories are present,
+From Figure \ref{fig:sensor-categories}, it can be observed that three out of five sensor categories are present,
 and from the present sensor categories all but three modalities can be recorded.
 Most of the excluded sensors are rather laborious to install in contrast to the included sensors.
 Capacitive sensing only works on ranges up to half a meter,
 ambient temperature sensing provides very minimal information about human activities,
-and magnetic sensing requires a large number of sensors compared to the useful information gained from them.
+and magnetic sensing requires a large number of sensors to gain any meaningful information.
 The excluded acoustic sensors could provide useful information with very little installation cost.
 WiFi based electromagnetic sensing could also potentially bring more value to the system,
+as WiFi devices are already available in most indoor environments,
 but radar can detect movements with a much finer resolution and the radar devices are perhaps easier to interface with.~\cite{sensing-survey}
 All in all, most of the interesting data modalities are recorded by the sensors in the system,
 with some room for improvement.
@@ -63,7 +63,7 @@ The white circle represents the tri-pod attachment point.
 With the sensors chosen,
 before a data collection campaign can ensue,
 software needs to be written to interface with the sensors and to record the data produced by them.
-The contribution of this thesis in the data collection project is to develop this software.
+The contribution of this thesis in the data collection project is the development of this software.
 
 The following sections (\ref{sec:2-radar}--\ref{sec:2-mic}) will discuss the operating characteristics, connection interfaces,
 and recorded data modalities of the included sensors.
@@ -147,17 +147,17 @@ and the exact format of the data segments is presented in more detail in Section
 The radar sensor has proven to be effective in \gls{har}.
 Unlike optical and acoustic sensors,
 radar is insensitive to environmental factors such as weather, lightning and acoustic noise.
-It is also capable of sensing through most (non-conductive) walls,
+It is also capable of sensing through most non-conductive walls and other obstructions,
 making it less prone to occlusion.
 Using \gls{mmWave} frequencies, radar is capable of detecting movements even in the sub-millimeter range.
 
-After processing, various information can can be extracted from the data:
+After processing, various information can be extracted from the data:
 \begin{itemize}
     \item target range, azimuth and altitude angle (Section \ref{sec:range-angle}),
     \item range-velocity spectrum (Section \ref{sec:doppler-spectrum}), and
     \item radar cross-section.
 \end{itemize}
-From \gls{har} perspective, the first three items of the list are the most interesting,
+From \gls{har} perspective, the first two items of the list are the most interesting,
 especially the doppler-spectrum (time-frequency spectrogram)~\cite{sensing-survey}.
 
 The radar can effectively detect various activities based on the Doppler-spectrum~\cite{bumblebee-micro-doppler-har, seifert19, liu12, kim16}.
@@ -169,14 +169,14 @@ This can limit its usefulness in low-power or low-budget applications.
 \section{Optical}
 The optical sensors consist of conventional visible spectrum imaging (RGB video),
 depth imaging, and infrared imaging.
-The system in this thesis includes sensors that can record all these modalities.
+The developed system includes sensors that can record all these modalities.
 The Intel RealSense D435i is capable of both visual spectrum and depth imaging,
 while the Panasonic Grid-EYE records the \gls{ir} spectrum.
 
 Visible spectrum video is one of the best studied areas in computer vision and \gls{har}.
-The primary approach to \gls{har} from RGB video is using convolutional neural networks.
-Models such as AlexNet~\cite{alexnet}, and C3D have proven to be effective,
-the latter reaching as high as 90 \% accuracy in detecting human actions~\cite{c3d}. 
+The primary approach to \gls{har} from RGB video is using convolutional neural networks
+such as AlexNet~\cite{alexnet} and C3D~\cite{c3d},
+which have reached as high as 90 \% accuracy in detecting human actions. 
 
 Using a stereo camera, depth information can be extracted.
 This allows for much simpler segmentation and pose estimation
@@ -188,13 +188,14 @@ RGB video based segmentation and \gls{har} in general can be problematic in some
 If the image has poor contrast, proper segmentation may not be possible.
 In addition to unfortunate colors,
 this may be caused by bad lightning conditions, i.e. under- or overexposure or extreme fog.
-Visible spectrum imaging also raises some privacy concerns in certain environments.
+Visible spectrum imaging also raises some privacy concerns.
 
 Thermal cameras are capable of detecting the heat radiation emitted from warm objects.
 This makes them capable of detecting human motion from the background regardless of the lightning conditions~\cite{han05}.
 Additionally, very low resolution (from 8x8 px to 16x16 px) \gls{ir} sensors
 have been demonstrated to be capable of detecting human actions~\cite{10.1145/2632048.2636084}.
-With a frame rate of 10 fps, detection accuracy of 85 \% and above has been reached depending on the action~\cite{sensing-survey, tao18}.
+With a frame rate of 10 fps, detection accuracy of 85 \% and above has been reached,
+depending on the complexity of the actions and additional context information~\cite{sensing-survey, tao18}.
 Although the detection accuracy is not as good as with the RGB-D camera,
 the possibility of operating in any lightning conditions and with high respect to privacy
 make the \gls{ir} camera a viable choice.
@@ -289,8 +290,7 @@ satisfying this requirement allows easily mapping any moment in time (\gls{time}
 \end{equation}
 
 For the data to be useful in supervised learning,
-the current activity at any given time must be included in the data set;
-the data must be labelled.
+the current activity at any given time must be included in the data set, i.e. the data must be labelled.
 Labelling can be done in various ways.
 
 The most accurate labelling method is manual labelling:

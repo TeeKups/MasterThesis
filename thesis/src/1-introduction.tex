@@ -9,21 +9,14 @@ operating room procedures~\cite{operatingroom}, hand gestures~\cite{handgestures
 and certain illnesses~\cite{parkinsson} have been proven to be recognizable by sensors.
 The possibilities seem almost limitless.
 
-For long, the focus in \gls{har} research has been in visible spectrum video.
-While it is undeniably a powerful sensing mechanism for the purpose,
-it has multiple major downsides.
-Visible spectrum imaging is very prone to occlusion and lighting conditions.
-In addition, due to face recognition, there are genuine concerns about the privacy issues related to visible spectrum sensing.~\cite{sensing-survey}
-Many actions can also look very similar depending on the viewing angle.
-With additional sensors, extra information can be used to better distinguish otherwise similar action from each other.
-
-Wearable sensors are a well-established mechanism human activity recognition~\cite{wearables}.
-This is already being used in multiple commercial applications,
-such as exercise and sleep recognition in smart watches.
-The downside of wearable sensors is that they can be cumbersome and unfashionable
-require willful equipping and rarely can be connected to mains.
-Clearly, if high-performance remote sensing can be achieved with a reasonable price,
-it is the superior alternative.
+For long, the focus in \gls{har} research has been in wearable sensors and visible spectrum imaging (RGB video).
+Wearable sensors are a well-established mechanism human activity recognition, that is already being used in multiple commercial applications,
+such as excercise and sleep recognition in smart watches~\cite{wearables}.
+While wearable sensors are undeniably a robust means of activity recognition,
+they can be cumbersome and unfashionable, require willful equipping, and rarely can be connected to mains.
+In \gls{har}, RGB video has been a staple of remote sensing for a long time.
+Unfortunately it is very prone to occlusion and lighting conditions.
+In addition, are concerns about the privacy issues related to visible spectrum imaging.~\cite{sensing-survey}
 
 In addition to visible spectrum imaging,
 remote sensors include depth imaging (stereo camera),
@@ -35,7 +28,7 @@ although their installation may be more labour-intensive~\cite{sensing-survey}.
 It has been shown that depth imaging can achieve at least similar performance in activity recognition as visible spectrum imaging,
 while simultaneously preserving privacy~\cite{depth}.
 In complex scenes, using depth imaging can increase the performance of activity recognition substantially~\cite{depth-2}.
-Depth imaging still suffers from many of the same problems as visible spectrum imaging,
+Depth imaging still suffers from many of the same problems as visible spectrum imaging:
 most importantly obstruction.
 
 Radar devices are capable of sensing through visual obstructions
@@ -51,27 +44,23 @@ in environments where WiFi is available~\cite{sensing-survey}.
 Another alternative for visible spectrum imaging is the infrared camera.
 Because the measured quantity is emitted directly from the human body,
 it is capable of operating even in zero-light conditions where a normal visible-spectrum camera would fail.
-
-It has been demonstrated that even with as low as $8 \times 8$ pixel resolution infrared cameras,
-recognizing some activities has been proven possible.
-In some cases the recognized activities have been very simple,
-such as sitting, standing, or lying on ground~\cite{ir-simple-activities}.
-With some additional context information,
-more complex household activities can also be recognized~\cite{ir-household}.
+It has been demonstrated that even as low as $8 \times 8$ pixel resolution infrared camera can be used
+to detect a limited set of simple activities with high accuracy~\cite{ir-simple-activities}.
 
 Sensor fusion can be leveraged to provide extra context information for improving human activity recognition~\cite{fusion1, fusion2}.
-For example, an infrared sensor may detect that a person is lying in a bed.
-Sound information from an acoustic sensor and respiratory rate information from a radar sensor
-could be used to tell whether the person is sleeping or not.
+With some additional context information,
+even the low resolution infrared camera is capable of recognizing more complex household activities~\cite{ir-household}.
+By combining multiple remote sensing modalities,
+it is expected that the activity detection accuracy can be increased by a large margin.
 
 Machine learning is one of the key techinologies used for \gls{har}.
 For training machine learning models, it is necessary to have large quantities of data available.
 Unfortunately, the number of data sets that considers sensor fusion in \gls{har} context is quite low~\cite{sensing-survey}.
 The number of available data sets is brought even lower when only the data sets that consider remote sensors are included.
 
-Remote sensing may very well be the future of \gls{har}.
-For this reason, it was considered valuable to create a portable multi-modal sensing system that can be used for recording data sets.
-As the product of this thesis, such a system was created.
+Remote sensing will certainly play a big role in the future of \gls{har}.
+Therefore, it was considered valuable to create a portable multi-modal remote sensing system that can be used for recording data sets.
+In this thesis, such a system was created.
 The sensors installed in the systems were a combined visible and depth spectrum camera,
 an $8 \times 8$ pixel infrared camera, a $4 \times 4$ channel microphone and a 60 GHz radar.
 
@@ -82,7 +71,7 @@ Surely, the data sets that will be recorded with the system will push forward th
 
 Chapter \ref{ch:2-premise} will describe the sensors used in the system in more detail and establish requirements for the developed system.
 In Chapter \ref{ch:3-system}, the implementation of the system will be detailed on an architectural level.
-Details of the source code will not be discussed. The source code of the project is publicly available for viewing on GitHub~\cite{github-link}.
+Details of the source code will not be discussed. The source code of the project is available for public viewing on GitHub~\cite{github-link}.
 The data formats produced by the recording system will be documented in Chapter \ref{ch:4-files-and-post} along some data processing examples.
 The quality and performance of the system will be briefly discussed in Chapter \ref{ch:5-evaluation},
 and finally, Chapter \ref{ch:6-conclusion} will conclude the thesis.

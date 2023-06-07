@@ -25,18 +25,18 @@ only the data in \texttt{ir.raw} has been repacked into a different number forma
 To extract meaningful data from the files, the file formats must be understood.
 Additionally, it may be beneficial to perform some post-processing for the data,
 especially in the case of the \texttt{radar.raw} file.
-
-The following sections will document the exact formats of the file
-and present some relevant data processing algorithms for each data file format.
+The following sections will document the exact formats of the files
+and present some relevant data processing algorithms for each data modality.
 
 \section{Activity labels and time stamps}
 The activity labels and their corresponding timestamps are stored in the \texttt{timestamps.csv} file.
-As implied by the file name, the file follows the \gls{csv} format, delimited by the comma character (",", unicode U+002C).
+As implied by the file name, the file follows the \gls{csv} format, delimited by the comma character (,).
 The file contains two columns.
 The first column contains time stamps and the second column contains labels.
-Listing \ref{lst:labels} provides an example of the file.
+Listing \ref{lst:activity-labels} provides an example of the file.
 
-\begin{lstlisting}[caption={Example \texttt{timestamps.csv} file.}\label{lst:labels}]
+\newpage
+\begin{lstlisting}[caption={Example \texttt{timestamps.csv} file.},label={lst:activity-labels}]
     0.000506,sitting
     1.689381,stand_up
     4.106970,walking
@@ -186,7 +186,7 @@ of the complex samples can be extracted with the following formulas:
 
 where $\gls{realdata}(x)$ is the $x$:th element of the vector containing the real samples,
 and alike, $\gls{imagdata}(x)$ is the $x$:th element of the vector containing the imaginary samples.
-Thus, the vector containing the complex samples \gls{samples-vec} is given by equation \ref{eq:complex-samples}, where \gls{imag-unit} is the imaginary unit.
+Thus, the vector containing the complex samples (\gls{samples-vec}) is given by equation \ref{eq:complex-samples}, where \gls{imag-unit} is the imaginary unit.
 
 \begin{equation}
     \label{eq:complex-samples}
@@ -613,7 +613,7 @@ and the minimum and maximum velocities
 \end{equation}
 \begin{equation}
     \label{eq:2dfft-min-max-velocity}
-    \gls{minvelocity} = -\gls{maxvelocity} = \frac{\gls{lightspeed}}{4 \gls{txfreq} \gls{chirptime}} \\
+    \gls{minvelocity} = -\gls{maxvelocity} = - \frac{\gls{lightspeed}}{4 \gls{txfreq} \gls{chirptime}} \\
 \end{equation}
 
 The range-velocity spectrum is calculated by first averaging the data
@@ -628,19 +628,22 @@ The dimensions of \gls{mean-chirp-matrix} are $\gls{numchirps} \times \gls{numsa
 \end{equation}
 
 After calculating \gls{mean-chirp-matrix}, the Fourier transform is performed on the second axis of the matrix,
-which is the fast-time samples. Denoting $\gls{mean-chirp-matrix} = \begin{bmatrix} \gls{fast-samples}(0) & \gls{fast-samples}(1) & \ldots & \gls{fast-samples}(\gls{numchirps}-1) \end{bmatrix}$,
-where $\gls{fast-samples}(\gls{chirpnumber})$ is the vector containing the fast-time samples for the $\gls{chirpnumber}$:th chirp,
-the operation is given by equation \ref{eq:fast-time-fft}.
+which is the fast-time samples. Denoting $\gls{mean-chirp-matrix} = \begin{bmatrix} \gls{fast-samples-mean}_{0} & \gls{fast-samples-mean}_{1} & \ldots & \gls{fast-samples-mean}_{\gls{numchirps}-1} \end{bmatrix}^{\gls{transpose}}$ where $\gls{fast-samples-mean-m}$ is the vector containing the mean of the fast-time samples in different receivers
+for the $\gls{chirpnumber}$:th chirp,
+the operation is given by equation \ref{eq:fast-time-fft},
+where $\gls{range-spectrum-m}$ is the range power-spectrum of the $\gls{chirpnumber}$:th chirp.
 
 \begin{equation}
     \label{eq:fast-time-fft}
-    \gls{range-spectrum}(\gls{chirpnumber}) = \mathcal{F} \left\{ \gls{fast-samples}(\gls{chirpnumber}) \right\}
+    \gls{range-spectrum-m} = \mathcal{F} \left\{ \gls{fast-samples-mean}_{\gls{chirpnumber}} \right\}
 \end{equation}
 
 The operation $\mathcal{F} \{ \cdot \}$ in equation \ref{eq:fast-time-fft} is the discrete Fourier transform.
-The resulting vector $\vec{\hat p}$ has contains the Fourier transform of $\gls{fast-samples}(\gls{chirpnumber})$ as its $\gls{chirpnumber}$:th element.
-Each bin in the vectors \gls{range-spectrum} corresponds to a range as given by equation \ref{eq:fast-time-fft-range}.
-The function $\gls{range}(\gls{samplenumber})$ gives the corresponding range for the \gls{samplenumber}:th bin in vector $\gls{range-spectrum}(\gls{chirpnumber})$ (Appendix \ref{app:deriving-range-velocity-fft}).
+Each bin in the vector $\gls{range-spectrum-m}$ corresponds to a range as given by equation \ref{eq:fast-time-fft-range}.
+The element of $\gls{range-spectrum-m}(\gls{samplenumber})$ contains the phase and amplitude of the reflection from the target in the 
+$\gls{samplenumber}$:th range bin of the $\gls{chirpnumber}$:th chirp.
+The function $\gls{range}(\gls{samplenumber})$ gives the corresponding range
+for the \gls{samplenumber}:th bin (Appendix \ref{app:deriving-range-velocity-fft}).
 
 \begin{equation}
     \label{eq:fast-time-fft-range}
@@ -648,22 +651,24 @@ The function $\gls{range}(\gls{samplenumber})$ gives the corresponding range for
 \end{equation}
 
 Assuming the range of the target changes by less than half a wavelength between two chirps,
-the phase difference between the $\gls{samplenumber}$:th element (frequency component) of vectors $\gls{range-spectrum}(\gls{chirpnumber})$ and $\gls{range-spectrum}(\gls{chirpnumber}+1)$
+the phase difference between the $\gls{samplenumber}$:th element (frequency component) of vectors
+$\gls{range-spectrum}_{\gls{chirpnumber}}$ and $\gls{range-spectrum}_{\gls{chirpnumber}+1}$
 is dictated by the distance the target has moved (Appendix \ref{app:deriving-range-velocity-fft}).
-Thus, denoting $\gls{range-spectrum-matrix} = \begin{bmatrix} \gls{range-spectrum}(0) & \gls{range-spectrum}(1) \ldots & \gls{range-spectrum}(\gls{numchirps}-1) \end{bmatrix}^{\gls{transpose}}$,
+Thus, denoting $\gls{range-spectrum-matrix} = \begin{bmatrix} \gls{range-spectrum}_{0} & \gls{range-spectrum}_{1} \ldots & \gls{range-spectrum}_{\gls{numchirps}-1} \end{bmatrix}^{\gls{transpose}}$,
 the Fourier transform can be applied along the first dimension of \gls{range-spectrum-matrix} to acquire the velocities of the targets.
 The range-velocity power-spectrum can thus be denoted as 
 \gls{range-velocity-unshifted} as given by equation \ref{eq:slow-time-fft-matrix},
-where $\gls{velocity-spectrum}(\gls{samplenumber})$ is the velocity spectrum for the \gls{samplenumber}:th range bin, as given by equation \ref{eq:slow-time-fft}.
+where $\gls{velocity-spectrum-n}$ is the velocity spectrum for the \gls{samplenumber}:th range bin,
+as given by equation \ref{eq:slow-time-fft}.
 
 \begin{equation}
     \label{eq:slow-time-fft-matrix}
-    \gls{range-velocity-unshifted} = \begin{bmatrix} \gls{velocity-spectrum}(0) & \gls{velocity-spectrum}(1) & \ldots & \gls{velocity-spectrum}(\gls{numsamples}-1)\end{bmatrix}
+    \gls{range-velocity-unshifted} = \begin{bmatrix} \gls{velocity-spectrum}_{0} & \gls{velocity-spectrum}_{1} & \ldots & \gls{velocity-spectrum}_{\gls{numsamples}-1}\end{bmatrix}
 \end{equation}
 
 \begin{equation}
     \label{eq:slow-time-fft}
-    \gls{velocity-spectrum}(\gls{samplenumber}) = \mathcal{F} \left \{ \begin{bmatrix} \gls{range-spectrum-matrix}(0, \gls{samplenumber}) & \gls{range-spectrum-matrix}(1, \gls{samplenumber}) & \ldots \gls{range-spectrum-matrix}(\gls{numchirps}-1, \gls{samplenumber}) \end{bmatrix}^T \right \}
+    \gls{velocity-spectrum-n} = \mathcal{F} \left \{ \begin{bmatrix} \gls{range-spectrum-matrix}(0, \gls{samplenumber}) & \gls{range-spectrum-matrix}(1, \gls{samplenumber}) & \ldots \gls{range-spectrum-matrix}(\gls{numchirps}-1, \gls{samplenumber}) \end{bmatrix}^T \right \}
 \end{equation}
 
 Because the velocity can be either positive or negative, the matrix $\gls{range-velocity-unshifted}$ still needs to be shifted so
@@ -678,7 +683,8 @@ The shifted range-velocity spectrum can be defined as $\gls{power}$ as given by 
     \end{cases}
 \end{equation}
 
-The velocity corresponding to the $\gls{chirpnumber}$:th bin on the first axis of $\gls{power}$ ($\gls{velocity}(\gls{chirpnumber})$) can be calculated from the 
+The velocity corresponding to the $\gls{chirpnumber}$:th bin ($\gls{velocity}(\gls{chirpnumber})$)
+on the first axis of $\gls{power}$ can be calculated from the 
 minimum velocity and velocity resolution (equations \ref{eq:2dfft-min-max-velocity} and \ref{eq:2dfft-max-range}).
 The velocity $\gls{velocity}(\gls{chirpnumber})$ is given by equation \ref{eq:slow-time-fft-bin-velocity}.
 

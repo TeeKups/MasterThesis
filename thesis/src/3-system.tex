@@ -34,31 +34,31 @@ spawning the sub-block processes (subprocesses), controlling them, providing a u
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=.8\textwidth]{fig/3/block_diagram.pdf}
+    \includegraphics[width=.8\textwidth]{fig/3/block-diagram.pdf}
     \caption{Block diagram of the system.}
     \label{fig:3-block-diagram}
 \end{figure}
 
 Inter-process communication is done via \gls{fifo} queues.
 Each subprocess is connected to the main process via a single queue.
-These queues are colloquially called signaling queues.
+These queues are colloquially called control queues.
 In addition, the producers are connected to the Recorder via queues,
 one queue per producer. These queues are called the data queues.
 The main process creates all these queues and passes them to appropriate subprocesses.
 
 Queues are presented in Figure \ref{fig:3-block-diagram} as single- or double-headed arrows.
-A double-headed arrow means that the queue can be written to and read from in both ends,
+A double-headed arrow means that the queue can be written to and read from both ends,
 and single-headed arrow means that data can be read from the pointy end and written from the other.
-The signaling queues are read from and written to from both ends,
+The control queues are read from and written to from both ends,
 whereas the data queues are only written to by the producers and read from by the consumer.
 
 While using multiple queues introduces some complexity to the system,
-it prevents having to deal with race-conditions.
+it prevents having to deal with race conditions.
 Another option would have been to use only a single Data queue
 and to lock it for writing via mutexes in each of the producers.
 The locking operation can block if the mutex is locked from somewhere else,
 which could add latency to the data reading operations,
-making the multiple queues -approach a better solution.
+making the multiple queues -approach a superior solution.
 
 The control queues are used by the Main process to advance the subprocesses to their next phase.
 The subprocesses write to the control queues to indicate their state.
@@ -82,7 +82,7 @@ The control messages are documented in Table \ref{tab:control-messages}.
 \end{table}
 
 The flow of the processes consists of three phases: initialization, primary function, and cleanup.
-The Main process and the data producers enter the primary function automatic-ally after the initialization phase is over.
+The Main process and the data producers enter the primary function automatically after the initialization phase is over.
 The data producers write the "STARTED" message to the control queue after this transition.
 The Recorder process instead waits for the "START" message before transitioning from initialization to primary function.
 None of the subprocesses enters the cleanup phase autonomously.
@@ -96,7 +96,7 @@ the Main process sends the "START" message to the Recorder process and enters it
 
 The user interface is a simple interactive command line interface that can be used for semi-automatic data labelling and stopping the program.
 A file containing activity labels is provided via the command line arguments to the program.
-The program reads activities separated by a newline character into a list,
+The program reads activities separated by a newline character ({\textbackslash}n) into a list,
 and each time the user hits the Enter key,
 the time elapsed since sending the "START" message is recorded.
 The activity and timestamp are then written into a file and the list iterator is advanced.
@@ -132,23 +132,23 @@ It is also responsible for time-domain synchronization of the different data str
 
 The initialization phase of the Recorder block consists of opening file handles for the output files and initializing some counters.
 In the beginning of the second phase, i.e. after receiving the "START" message,
-the Radar block finds the common starting point for each data producer and synchronizes the data streams to the common starting point.
+the Radar block finds the common starting point for each data producer and synchronizes the data streams to it.
 After the data streams are synchronized, the Recorder enters a loop in which it simply reads the data from each data queue and writes it onto a disk.
 
 Time synchronization is achieved in the Recorder block by observing the time stamps that the producers add to the packets they write in data queues.
-Each packet is a dict object that contains a segment of data and the time stamp when the data segment was recorded.
+Each packet is a Python \texttt{dict} object that contains a segment of data and the time stamp for when the data segment was recorded.
 
 By the time the "START" message is received from the control queue,
 all the data producers have started producing data and have written their first message to the data queues.
-After the "START" message, the Main process also writes the current time to the control queue of the Radar block.
-The common starting point is found by comparing the time stamps in the data queues to the starting time provided by the Radar block.
+After the "START" message, the Main process also writes the current time to the control queue of the Recorder block.
+The common starting point is found in the Recorder block by comparing the time stamps in the data queues to the starting time provided by the Main block.
 The data in each data queue is simply discarded until the timestamp is within half-a-frame from the starting time.
 After the appropriate amount of data has been discarded from each queue,
 the data streams are synchronized and the Recorder starts writing the data into files.
 The data starting point synchronization procedure is presented in pseudocode in Listing \ref{lst:synchronization}.
 The half-a-frame accuracy is omitted from the listing for brevity.
 
-\begin{lstlisting}[language=Python, caption={Start of data synchronization pseudocode.}\label{lst:synchronization}]
+\begin{lstlisting}[language=Python, caption={Start of data synchronization pseudocode.},label={lst:synchronization}]
 while control_queue.pop() != "START":
     pass
 start_time = control_queue.pop()
@@ -177,7 +177,7 @@ Instead of the starting time, the time stamps are compared to the ending time,
 and instead of discarding the data, it is written into a file.
 The modified algorithm is presented in Listing \ref{lst:end-synchronization}.
 
-\begin{lstlisting}[language=Python, caption={End of data synchronization pseudocode.}\label{lst:end-synchronization}]
+\begin{lstlisting}[language=Python, caption={End of data synchronization pseudocode.},label={lst:end-synchronization}]
 while (control_queue.empty() or control_queue.pop() != "STOP"):
     for queue in data_queues:
         message = queue.pop()
@@ -208,7 +208,7 @@ After freeing the resources and flushing the queues, the process will exit.
 The radar module actually consists of two devices: the Texas Instruments IWR6834ISK and the DCA1000EVM Radar Data capture card.
 In this section, the former is referred to as the "radar device" and the latter as the "capture card".
 The radar device connects to the computer via USB and implements a simple serial interface.
-The capture card uses Internet Protocol version 4 to connect to the computer and transfers data over the User Datagram Protocol.
+The capture card uses the \gls{ipv4} protocol to connect to the computer and transfers data over the User Datagram Protocol.
 
 In the Radar block, the Pyserial third-party library is used to connect to the serial interface.
 The Pyserial library implements an easy-to-use high-level serial port \gls{api}.~\cite{python-serial}
@@ -229,7 +229,7 @@ The packets consist of a header (\texttt{0x055A}), a two-byte unsigned integer l
 The commands are listed in the DCA1000EVM user guide~\cite{dca1000-user-guide} and the details of the command bodies are documented in 
 DCA1000EVM CLI Software Developer guide, which is included in the Texas Instruments mmWave studio collection of tools~\cite{mmwave-studio}.
 For the sake of availability, the commands and their bodies are also documented in Appendix \ref{app:dca1000evm-commands}.
-While most settings are left to default values, the LVDS mode is changed to 2lane and Data format mode is changed to 16-bit.
+While most settings are left to default values, the \gls{lvds} mode is changed to 2lane and Data format mode is changed to 16-bit.
 This is done via the CONFIG\_FPGA\_GEN\_CMD\_CODE command (Appendix \ref{app:dca1000evm-commands}, Section \ref{app:sec:config-fpga}).
 
 After configuration is done, the devices must also be started.
@@ -284,7 +284,7 @@ In this implementation, the resolutions and frame rates are read from a configur
 The colored stream is configured to output data in the RGB8 format, where each pixel is represented by three bytes.
 The bytes are one-byte unsigned integers. The first byte is the red value, second byte is the green value and third byte is the blue value.
 The depth stream is configured to output data as 2-byte floating point numbers,
-where each pixel, or a 2-byte floating point number, represents the distance from the camera in the direction of the pixel.
+where each pixel, or a 2-byte floating point number, represents the distance from the camera in millimeters in the direction of the pixel.
 
 After configuring the data streams, the \texttt{Pipeline} object is used to start the sensor.
 After the sensor has been started, the process writes the "STARTED" message to the control queue and enters its primary function.
@@ -292,7 +292,7 @@ After the sensor has been started, the process writes the "STARTED" message to t
 In the primary function, the process reads frames from the \texttt{Pipeline} object using a member function of the Pipeline object that blocks until a frame is available.
 The function call returns a \texttt{composite\_frame} object that contains the stream data, a time stamp, and some other less interesting metadata.
 The RGB-D process reads the color stream data and the depth stream data into arrays and stores them in a \texttt{dict} object along the time stamp for the frame,
-which is also read from the \texttt{composite\_frame}.
+which is also read from the \texttt{composite\_frame} object.
 The \texttt{dict} object is then written into the data queue and the process is repeated until the "STOP" message is received from the control queue.
 
 When the "STOP" message is received,
@@ -317,8 +317,8 @@ Two kinds of packets are implemented for the GRID-EYE protocol: Sensor Data fram
 The Command frames are used by the connecting computer to configure the device and after being started,
 the device will write Sensor Data frames to the serial port.
 The Command frames can be used to set the sensor into either 10 \gls{fps} for 1 \gls{fps} mode.~\cite{grid-eye-protocol}
-The sensor is used in the 10 \gls{fps} mode in the system, because the 1 \gls{fps} mode is only the sum of every 10 frames
-and similar effect can easily be achieved by post-processing the data after recording~\cite{grid-eye-manual}.
+The sensor is used in the 10 \gls{fps} mode in the system, because the 1 \gls{fps} mode is simply the mean of every 10 frames
+and a similar effect can easily be achieved by post-processing the data after recording~\cite{grid-eye-manual}.
 
 In the initialization phase, the IR process opens the serial port (9600~bps, no parity, one stop bit, 8-bit byte size).
 The device requires no further configuration as it operates in the 10 \gls{fps} mode by default.
@@ -355,6 +355,7 @@ The flow of the system is illustrated in Figure \ref{fig:3-ir-flowchart}.
 \label{sec:3-mic}
 Unlike the other devices, the data produced by the microphone cannot be organized into frames.
 It produces a continuous stream of data on all 16 channels at a configurable sampling rate and bit depth.
+The audio frames could also be thought to consist of a single sample on each channel.
 The SoundDevice library is used for interfacing with the device~\cite{sounddevice-docs}.
 It provides Python bindings for the PortAudio library,
 which, among other features, has the ability to pick a sound device,
@@ -370,8 +371,8 @@ The second parameter can be used to list only input or output devices.~\cite{sou
 The SoundDevice library implements an \gls{api}, where \texttt{Stream} objects are created and attached to audio devices.
 The \texttt{Stream} objects can then write to and read from devices.
 A callback function may be passed to the constructor of the \texttt{Stream} object,
-which is periodically called automatically by the PortAudio library.
-The callback function handles writing data to the device and provides access to the read data.~\cite{sounddevice-docs-stream}
+which is automatically called with minimal delay by the PortAudio library when data is available.
+The callback function handles writing data to the device and provides means of accessing the read data.~\cite{sounddevice-docs-stream}
 
 The callback function may also be omitted,
 in which case reading and writing should be done via the blocking \texttt{read} and \texttt{write} functions.
@@ -425,7 +426,7 @@ All of the arguments are file paths.
 The first argument, \texttt{activities}, can be used to provide a list of activities for the software.
 This can be used for semi-automatic activity labelling during the recording process.
 This is useful when recording a predetermined list of activities.
-The activities must be separated by newline (\texttt{\textbackslash n}) characters.
+The activities must be separated by newline ({\textbackslash}n) characters.
 The software outputs a \gls{csv} file which contains the same list of activities,
 but each activity is assigned a timestamp.
 The file can also be empty, in which case no timestamps will be recorded other than the starting and stopping time.
@@ -435,7 +436,7 @@ The values present in the file are used to configure the sensors.
 The file must follow the YAML data serialization language.
 An example file is provided in Listing \ref{lst:config}.
 
-\begin{lstlisting}[caption={Example configuration file.}\label{lst:config}]
+\begin{lstlisting}[language=Python,caption={Example configuration file.},label={lst:config}]
 radar:
     config: filename
 camera:

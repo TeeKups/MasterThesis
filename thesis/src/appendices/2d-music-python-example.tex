@@ -12,7 +12,8 @@ The number of targets $\gls{numtargets}$ in the algorithm is estimated using \gl
 
 \begin{lstlisting}[
     language=Python,
-    caption={Code example for estimating the range-azimuth spectrum for a radar data cube using the 2D-MUSIC algorithm. (Part 1/2)}\label{lst:2d-music-code-1}
+    caption={Code example for estimating the range-azimuth spectrum for a radar data cube using the 2D-MUSIC algorithm. (Part 1/2)},
+    label={lst:2d-music-code-1}
 ]
 import numpy
 from scipy import constants
@@ -33,7 +34,8 @@ def music(frame, ranges, angles, slope, fs, fc):
 Listing \ref{lst:2d-music-code-2} is continuation to listing \ref{lst:2d-music-code-1}.
 \begin{lstlisting}[
     language=Python,
-    caption={Code example for estimating the range-azimuth spectrum for a radar data cube using the 2D-MUSIC algorithm. (Part 2/2)}\label{lst:2d-music-code-2}
+    caption={Code example for estimating the range-azimuth spectrum for a radar data cube using the 2D-MUSIC algorithm. (Part 2/2)},
+    label={lst:2d-music-code-2}
 ]
     eigvals, eigvecs = numpy.linalg.eigh(cov_mtx)
     # sort largest first so noise subspace is in the end

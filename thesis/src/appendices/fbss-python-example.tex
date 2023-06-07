@@ -4,7 +4,7 @@ The dimensions of the data cube are $K \times M \times N$.
 The second and third argument are the dimensions of the scanning window,
 and the last argument is the index of a chirp in the data cube; $m \in \left[ 0, M \right)$.
 
-\begin{lstlisting}[language=Python, caption={Code example for applying forward-backward spatial smoothing to a data matrix.}\label{lst:fbss-code}]
+\begin{lstlisting}[language=Python, caption={Code example for applying forward-backward spatial smoothing to a data matrix.},label={lst:fbss-code}]
 import numpy
 def covariance_FBSS(data_cube, q1, q2, m):
     K = data_cube.shape[0]

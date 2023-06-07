@@ -10,13 +10,15 @@ This holds true for any of the data sources.
 Thus, if a frame corresponding to the same point in time is extracted from each data source,
 high correlation should be seen between the frames.
 
-Judging the data synchronization is done, in this case,
+In this case, evaluating the data synchronization is done
 simply by calculating the range-angle spectrum from the radar frame and drawing it next to the RGB and \gls{ir} frames.
 Because the RGB and Depth video are coming from the same sensor, they are guaranteed to be time-synchronized.
+The drawn frames should look like they correspond to the same moment in time.
 
 The audio sensor is omitted from this evaluation.
 For audio-to-radar synchronization the angle of arrival of a single tone could be estimated from the audio signal.
-Given the source for the tone is a radar target, the sound and radar angle-power spectrum could be observed.
+Given the source for the tone is a radar target, the sound and radar angle-power spectrum could be observed
+to see if the direction of arrival is correlated between the sensors.
 For audio-to-video synchronization, a video could be recorded of a person starting a tone generator.
 If the tone then appears in the audio signal at the same moment when the person starts the tone generator,
 it could be concluded that the sound and audio recordings are synchronized.

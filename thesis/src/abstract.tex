@@ -1,32 +1,40 @@
 With the growth in computing power and sensor capability,
-new possibilities are opened for human activity recognition.
-Multiple applications for human activity recognition have been proposed,
-such as health case and shoplifting recognition.
+new possibilities are opened for human activity recognition,
+for which multiple applications have been proposed.
+Most notably, security and health care applications,
+such as shoplifting and vandalism detection, fall detection, and respiratory rate sensing.
 Some commercial applications are already available,
-such as the health and fitness applications found in smart phones and watches.
+such as the health and fitness applications found in smart phones and watches,
+that automatically detect certain types of exercise.
 
-Typically activity recognition is performed on video or wearable sensors.
-Alas, video based sensing is susceptible to lightning conditions and obstructions,
-whereas worn sensors may be cumbersome, unfashionable, or otherwise inconvenient.
+Typically, wearable sensors are used for human activity recognition.
+Using gyroscopes and accelerometers, key positions in the human body can be accurately tracked,
+which can be used for very high-performance activity recognition,
+given the number of sensors is sufficient.
+Wearable sensors have an inherent drawback, though.
+They can be cumbersome and unfashionable,
+and they require willful equipping.
+They also must be battery-powered to enable free movement,
+which makes them less reliable than a mains-powered solution.
 
-Clearly, there is demand for alternative mechanisms for human activity recognition.
-Additionally, sensor fusion has grown in popularity in the recent years.
-Sensors can only sense certain modalities,
-thus combining multi-modal sensors may bring improvements to activity recognition accuracy.
+In the context of human activity recognition,
+visible spectrum imaging (RGB camera) has traditionally been the most popular choice for remote sensing.
+Unfortunately, the RGB camera is very susceptible to obstructions and varying lightning conditions,
+which limits its usefulness.
+The RGB camera is also inherently privacy-invasive.
+Clearly, there is a demand for other means of remote sensing.
+The majority of available data sets for human activity recognition considers only wearable sensors
+and visible-spectrum imaging.
+To advance the state of human activity recognition via remote sensing,
+new data sets are required that consider more remote sensors.
 
-Data sets that consider sensor fusion are unfortunately few.
-For this reason, it was seen valuable to develop a recording system
-that combines multiple sensors.
-The sensors chosen for the system were an RGB-D camera, 60 GHz radar, low resolution infrared camera, and a microphone.
-The recording system was implemented using a parallel programming model to maximize the data throughput.
-
-The recording system was developed as the product of this thesis.
+In this thesis, a portable multi-modal data recording system was developed.
+The system encompasses an RGB camera, a stereo-vision based depth camera,
+a low-resolution infrared camera, a microphone, and a millimeter-wave radar.
 This thesis documents the used sensors,
-architecture of the implemented system,
-and the data formats produced by the system.
-The developed system was slightly unstable,
-but sufficient for recording small-scale data sets.
-The instability was likely resulting from either the used radar device or some programming error in the implemented system.
-If the instability is fixed,
-the system will also be capable of recording larger-scale data sets.
-Nevertheless, the implemented system will serve as a good basis for future research and development.
+the architecture of the software,
+and the data output formats of the software.
+The developed system remained slightly unstable,
+but still suitable for a small-scale data collection campaign.
+The instability was likely due to the used radar device or some programming error.
+If the instability can be fixed, the system will be capable of carrying out even larger-scale data collection campaigns.

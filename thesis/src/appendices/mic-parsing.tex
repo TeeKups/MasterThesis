@@ -1,7 +1,7 @@
 Listing \ref{lst:audio-parsing} shows an example of parsing WAV files, such as the \texttt{audo.wav} file produced by the data recording system.
 The Soundfile \cite{python-soundfile} library is used for reading the file.
 
-\begin{lstlisting}[language=Python, caption={Code example for parsing WAV files}\label{lst:audio-parsing}]
+\begin{lstlisting}[language=Python, caption={Code example for parsing WAV files},label={lst:audio-parsing}]
 import soundfile
 
 data, samplerate = soundfile.read('audio.wav', dtype='float32')

@@ -1,27 +1,40 @@
-Tietokoneiden laskentatehon kasvaminen ja sensorien kyvykkyyden kasvaminen avaa uusia mahdollisuuksia aktiviteetin tunnistukselle.
-Aktiviteetintunnistukselle on esitetty useita mahdollisia käyttökohteita kuten terveyspalvelut ja automaattinen myymälävartiointi.
-Kaupallisiakin sovelluksia on jo useita, yleisimpänä matkapuhelimien ja älykellojen terveyssovellukset.
+Tietokoneiden laskentatehon ja sensorien kyvykkyyden kasvu avaa uusia mahdollisuuksia aktiviteetin tunnistukselle,
+jolle onkin jo esitetty useita mahdollisia sovelluksia.
+Merkittävimpiä sovelluksia ovat muun muassa turvallisuus- ja terveyssovellukset,
+kuten myymälävarkauksien ja ilkivallan tunnistaminen, kaatumisen tunnistaminen, sekä hengitystiheyden havainnointi.
+Joitain kaupallisia sovelluksia on jo saatavilla,
+kuten älykelloista ja -puhelimista löytyvät terveyssovellukset,
+jotka osaavat tunnistaa joitain liikuntamuotoja.
 
-Tyypillisesti aktiviteetintunnistus perustuu joko videokuvaan tai puettaviin sensoreihin.
-Videokuva kuitenkin on herkkä olosuhteille, kuten valolle ja esteille,
-kun taas puettavat sensorit saattavat olla epämukavia, epämuodikkaita, tai muusta syystä epäkäytännöllisiä.
+Tyypillisesti aktiviteetintunnistukseen käytetään puettavia sensoreita.
+Gyroskoopeilla ja kiihtyvyysantureilla saadaankin seurattua avainkohtien liikkeitä hyvin tarkasti,
+mikä mahdollistaa suorityskykyisen aktiviteetintunnistuksen,
+kunhan sensoreita on riittävästi.
+Puettavien sensoreiden varjopuolena kuitenkin on,
+että ne saattavat olla epämukavia ja epämuodikkaita.
+Lisäksi ne vaativat suostumuksellista pukemista,
+mikä saattaa rajoittaa käyttökohteita.
+Puettavien sensoreiden olisi myöskin syytä olla akkukäyttöisiä,
+mikä tekee niistä epäluotettavia verrattuna verkkovirtaan kytkettäviin sensoreihin.
 
-Selvästi vaihtoehtoisille aktiviteetintunnistusmekanismeille on kysyntää.
-Lisäksi sensorifuusio on viime vuosina kasvattanut suosiotaan.
-Sensorit kykenevät havaitsemaan vain tiettyjä modaliteetteja,
-joten usean modaliteetin yhdistämisellä saatetaan parantaa aktiviteetin tunnistustarkkuutta.
+Aktiviteetin tunnistuksessa näkyvän spektrin valon kuvaaminen (RGB kamera)
+on perinteisesti ollut suosituin vaihtoehto etämittaukselle.
+Valitettavasti RGB kamera on herkkä näköesteille ja valo-olosuhteille,
+mikä rajoittaa sen käytettävyyttä.
+Lisäksi RGB kamera on luonnostaan yksityisyyttä loukkaava.
+On selvää, että muille etämittausmenetelmille on kysyntää.
+Valtaosa aktiviteetin tunnistukseen saatavilla olevista dataseteistä
+kattaa vain puettavia sensoreita sekä RGB videon.
+Jotta etämittauksella suoritettavaa aktiviteetintunnistusta voidaan kehittää,
+on luotava lisää datasettejä, jotka kattaavat muitakin etämittausmenetelmiä.
 
-Datasettejä, jotka huomioivat sensorifuusion, on kuitenkin vain vähän.
-Tästä syystä katsottiin hyödylliseksi kehittää nauhoitusjärjestelmä,
-joka yhdistää useita sensoreita.
-Järjestelmään valitut sensorit olivat RGB-D kamera, 60 GHz tutka, matalaresoluutioinen infrapunakamera, sekä mikrofoni.
-Nauhoitusjärjestelmä toteutettiin käyttäen rinnakkaista ohjelmointimallia datan läpijuoksun maksimoimiseksi.
-
-Kyseinen järjestelmä kehitettiin tämän diplomityön produktina ja tämä diplomityö dokumentoi käytetyt sensorit,
-toteutetun järjestelmän arkkitehtuurin, sekä tuotetut dataformaatit.
+Tässä diplomityössä luotiin liikuteltava useamodaalinen nauhoitusjärjestelmä.
+Järjestelmä kattaa RGB kameran, stereonäköä hyödyntävän syvyyskameran,
+matalaresoluutioisen infrapunakameran, mikrofonin, sekä millimetriaaltotutkan.
+Tämä diplomityö dokumentoi käytetyt sensorit,
+toteutetun ohjelmiston arkkitehtuurin,
+sekä toteutetun ohjelmiston tuottamat dataformaatit.
 Toteutettu järjestelmä jäi hieman epävakaaksi,
-mutta kuitenkin sitä voidaan sellaisenaan käyttää pienimuotoisten datasettien nauhoittamiseen.
-Todennäköisesti epävakaus johtui joko käytetystä tutkalaitteesta tai toteutetun ohjelmiston viasta.
-Jos epävakaus saadaan korjattua,
-järjestelmä on kykenevä myös laajamuotoisempien datasettien nauhoittamiseen.
-Joka tapauksessa, toteutettu järjestelmä toimii hyvänä pohjana tulevalle tutkimukselle ja kehitykselle.
+mutta se soveltuu kuitenkin pienimuotoisten datasettien keräämiseen.
+Epävakaus johtui luultavasti joko käytetystä tutkalaitteesta tai ohjelmointivirheestä.
+Jos epävakaus saadaan korjattua, järjestelmä soveltuu myös suuremman mittakaavan datasettien keräämiseen.
